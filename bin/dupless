@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+dir = File.dirname(File.dirname(File.expand_path(__FILE__)))
+libpath = dir + "/lib"
+$:.unshift libpath
+
+require 'dupless/file'
+require 'dupless/fdprocessor'
+require 'pathname'
+
+module Dupless
+  class App < FileDirProcessor
+    def initialize args
+      @files = Array.new
+      super args
+    end
+
+    def process_file file 
+      df = Dupless::File.new file
+      @files << df
+    end
+
+    def show_duplicates
+      sorted = @files.sort_by(&:pathname)
+
+      nsorted = sorted.size
+      puts "nsorted: #{nsorted}"
+
+      (0 ... sorted.size).each do |idx|
+        file = sorted[idx]
+        next unless file
+        puts "file: #{file} #{idx}/#{nsorted}"
+
+        (0 ... sorted.size).each do |si|
+          next if si == idx
+          other = sorted[si]
+          next unless other
+          # puts "other: #{other}"
+
+          if file == other
+            puts "file: #{file} == #{other}"
+            sorted[si] = nil
+          end
+        end
+
+        sorted[idx] = nil
+      end
+    end
+  end
+end
+
+app = Dupless::App.new ARGV
+app.show_duplicates
