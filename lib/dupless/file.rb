@@ -50,5 +50,9 @@ module Dupless
     def to_s
       pathname.to_s
     end
+
+    def inspect
+      to_s
+    end
   end
 end

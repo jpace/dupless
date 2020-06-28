@@ -20,7 +20,7 @@ module Dupless
     end
 
     def to_s
-      "files.size: #{@files.size}"
+      "files: #{@files}"
     end
 
     def == other
