@@ -1,26 +1,8 @@
 require 'test_helper'
-require 'dupless/file'
+require 'dupless/mockfile'
 require 'paramesan'
-require 'digest/md5'
 
 module Dupless
-  class MockFile < File
-    attr_reader :fname, :size, :checksum
-    
-    def initialize fname, size, bytes, checksum
-      super fname
-      
-      @fname = fname
-      @size = size
-      @bytes = bytes
-      @checksum = checksum
-    end
-
-    def bytes num
-      @bytes[0 ... num]
-    end
-  end
-
   class FileTest < Minitest::Test
     include Paramesan
 
@@ -44,6 +26,11 @@ module Dupless
     param_test build_params.each do |exp, x, y|
       result = x <=> y
       assert_equal exp, result
+    end
+
+    param_test build_params.each do |exp, x, y|
+      result = x == y
+      assert_equal exp == 0, result
     end
   end
 end

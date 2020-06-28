@@ -1,4 +1,3 @@
-#!/bin/env ruby
 # -*- ruby -*-
 
 require 'pathname'
@@ -14,6 +13,7 @@ module Dupless
       @pathname = what.kind_of?(Pathname) ? what : Pathname.new(what)
       @size = nil
       @bytes = nil
+      @checksum = nil
     end
 
     def size
@@ -25,7 +25,7 @@ module Dupless
     end
 
     def checksum
-      Digest::MD5.hexdigest(@pathname.read)
+      @checksum ||= Digest::MD5.hexdigest(@pathname.read)
     end
 
     def <=> other
@@ -41,6 +41,10 @@ module Dupless
       end
 
       comps.last.call
+    end
+
+    def match? other
+      self == other
     end
 
     def to_s
