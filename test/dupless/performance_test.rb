@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'dupless/set'
+require 'dupless/set_factory'
 require 'dupless/file'
 require 'dupless/entry'
 require 'dupless/mockfiles'
@@ -50,7 +51,8 @@ module Dupless
         Logue::Log::info "val: #{val}"
       end
       Logue::Log::info "files.size: #{files.size}"
-      set = Set.new files
+      sf = SetFactory.new
+      set = sf.set files: files, type: :sorted_by_size
       Array.new.tap do |ary|
         ary << [ [ entry(18, -2, -1) ], set ]
       end

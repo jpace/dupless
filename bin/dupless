@@ -7,8 +7,8 @@ $:.unshift libpath
 require 'dupless/file'
 require 'dupless/fdprocessor'
 require 'dupless/set'
+require 'dupless/set_factory'
 require 'dupless/entry'
-require 'pathname'
 require 'logue'
 
 Logue::Log::level = Logue::Level::DEBUG
@@ -18,20 +18,22 @@ module Dupless
     include Logue::Loggable
     
     def initialize args
-      @all = Set.new
+      sf = SetFactory.new
+      type = :sorted_by_size
+      type = :twopass
+      @set = sf.set type: type
       super args
     end
 
     def process_file file 
       df = Dupless::File.new file
-      @all << df
+      @set << df
     end
 
     def show_duplicates
-      info "self: #{self}"
-      dups = @all.duplicates_2
+      dups = @set.duplicates
       puts "#dups: #{dups.size}"
-      # puts "dups: #{dups}"
+      return if true
       dups.each do |dup|
         puts "dup: #{dup}"
       end
