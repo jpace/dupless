@@ -1,23 +1,19 @@
 # -*- ruby -*-
 
-require 'dupless/file'
-require 'dupless/entry'
-require 'dupless/set_two_pass'
-require 'dupless/set_sorted_by_size'
-require 'logue'
+require 'dupless/set/two_pass'
+require 'dupless/set/sorted_by_size'
+require 'dupless/set/singlepass'
 
-module Dupless
-  class SetFactory
-    include Logue::Loggable
-
-    attr_reader :files
-    
+module Dupless::Set
+  class Factory
     def set files: Array.new, type: :twopass
       cls = case type
             when :twopass
-              TwoPassSet
+              TwoPass
             when :sorted_by_size
-              SortedSizeSet
+              SortedBySize
+            when :singlepass
+              SinglePass
             else
               raise "unknown set type: #{type.inspect}"
             end

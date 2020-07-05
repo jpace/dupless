@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 # -*- ruby -*-
 
-require 'dupless/file'
-require 'dupless/entry'
-require 'dupless/set'
+require 'dupless/set/files'
 
- module Dupless
-  class TwoPassSet < Set
+module Dupless::Set
+  class TwoPassSet < WithFiles
     def duplicates
       # almost completely unoptimized:
 
@@ -26,7 +24,7 @@ require 'dupless/set'
           y = @files[j]
           next if y.nil?
           if x.match? y
-            dup ||= Entry.new([x])
+            dup ||= Dupless::Entry.new([x])
             dup << y
             @files[j] = nil
           end
@@ -43,14 +41,6 @@ require 'dupless/set'
       info "diff: #{diff}"
       
       dups
-    end
-
-    def inspect
-      to_s
-    end
-
-    def to_s
-      "files.size: #{@files.size}"
     end
   end
 end

@@ -4,8 +4,8 @@ require 'dupless/file'
 require 'dupless/entry'
 require 'logue'
 
-module Dupless
-  class Set
+module Dupless::Set
+  class Base
     include Logue::Loggable
     
     def duplicates

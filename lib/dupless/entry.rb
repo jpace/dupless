@@ -26,5 +26,14 @@ module Dupless
     def == other
       @files == other.files
     end
+
+    def print format: :long
+      case format
+      when :long
+        @files.each do |file|
+          puts "file: #{file}"
+        end
+      end
+    end
   end
 end

@@ -1,19 +1,12 @@
-require 'test_helper'
-require 'dupless/set'
-require 'dupless/set_factory'
+require 'dupless/set/base'
+require 'dupless/set/factory'
 require 'dupless/file'
 require 'dupless/entry'
 require 'dupless/mockfiles'
-require 'paramesan'
-require 'logue'
-
-Logue::Log::level = Logue::Level::DEBUG
+require 'dupless/tc'
 
 module Dupless
-  class PerformanceTest < Minitest::Test
-    include Paramesan
-    include Logue::Loggable
-
+  class PerformanceTest < TestCase
     def self.create_mock_file size, bytes, checksum
       name = "#{size}-#{bytes}-#{checksum}"
       MockFile.new name, size, bytes, checksum
@@ -47,11 +40,11 @@ module Dupless
 
     def self.performance_build_params
       files.each_with_index do |val, idx|
-        Logue::Log::info "idx: #{idx}"
-        Logue::Log::info "val: #{val}"
+        info "idx: #{idx}"
+        info "val: #{val}"
       end
-      Logue::Log::info "files.size: #{files.size}"
-      sf = SetFactory.new
+      info "files.size: #{files.size}"
+      sf = Set::Factory.new
       set = sf.set files: files, type: :sorted_by_size
       Array.new.tap do |ary|
         ary << [ [ entry(18, -2, -1) ], set ]
@@ -60,7 +53,7 @@ module Dupless
 
     param_test performance_build_params.each do |exp, set|
       dups = set.duplicates
-      puts "dups: #{dups}"
+      info "dups: #{dups}"
       assert_equal exp, dups
     end
   end

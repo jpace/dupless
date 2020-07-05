@@ -1,27 +1,14 @@
-require 'dupless/set/factory'
-require 'dupless/set/base'
+require 'dupless/set/singlepass'
 require 'dupless/file'
 require 'dupless/entry'
-require 'dupless/tc'
-require 'dupless/mockfiles'
+require 'dupless/set/tc'
 
-module Dupless
-  class SetTest < TestCase
-    def self.files
-      Dupless::MockFiles.files
-    end
+Logue::Log::level = Logue::Level::DEBUG
 
-    def self.set range, type: :sorted_by_size
-      sf = Set::Factory.new
-      set = sf.set type: type
-      files[range].each do |f|
-        set << f
-      end
-      set
-    end
-
-    def self.entry(*indices)
-      Dupless::Entry.new(indices.collect { |idx| files[idx] })
+module Dupless::Set
+  class SinglePassTest < TestCase
+    def self.set range
+      SinglePass.new files: files[range]
     end
 
     def self.dups_build_params

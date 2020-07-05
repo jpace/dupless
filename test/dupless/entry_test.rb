@@ -1,16 +1,9 @@
-require 'test_helper'
 require 'dupless/entry'
 require 'dupless/mockfile'
-require 'paramesan'
-require 'logue'
-
-Logue::Log::level = Logue::Level::DEBUG
+require 'dupless/tc'
 
 module Dupless
-  class EntryTest < Minitest::Test
-    include Paramesan
-    include Logue::Loggable
-
+  class EntryTest < TestCase
     @@mockfiles = Array.new.tap do |ary|
       ary << MockFile.new("1-x-7", 1, "x", 7)
       ary << MockFile.new("2-x-7", 2, "x", 7)

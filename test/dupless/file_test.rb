@@ -1,11 +1,8 @@
-require 'test_helper'
 require 'dupless/mockfile'
-require 'paramesan'
+require 'dupless/tc'
 
 module Dupless
-  class FileTest < Minitest::Test
-    include Paramesan
-
+  class FileTest < TestCase
     def self.build_params
       a = MockFile.new "", 1, "x", 7
       b = MockFile.new "", 2, "x", 7

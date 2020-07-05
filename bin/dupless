@@ -6,8 +6,7 @@ $:.unshift libpath
 
 require 'dupless/file'
 require 'dupless/fdprocessor'
-require 'dupless/set'
-require 'dupless/set_factory'
+require 'dupless/set/factory'
 require 'dupless/entry'
 require 'logue'
 
@@ -17,12 +16,11 @@ module Dupless
   class App < FileDirProcessor
     include Logue::Loggable
     
-    def initialize args
-      sf = SetFactory.new
-      type = :sorted_by_size
-      type = :twopass
+    def initialize(*args, type: :singlepass)
+      sf = Dupless::Set::Factory.new
+      puts "type: #{type}"
       @set = sf.set type: type
-      super args
+      super(*args)
     end
 
     def process_file file 
@@ -33,13 +31,31 @@ module Dupless
     def show_duplicates
       dups = @set.duplicates
       puts "#dups: #{dups.size}"
-      return if true
-      dups.each do |dup|
-        puts "dup: #{dup}"
+      # return if true
+      dups.each_with_index do |dup, idx|
+        puts "idx: #{idx}"
+        dup.print
       end
+      puts
     end
   end
 end
 
-app = Dupless::App.new ARGV
+type = :sorted_by_size
+
+args = Array.new
+ARGV.each do |arg|
+  case arg
+  when "-s", "--sorted-by-size"
+    type = :sorted_by_size
+  when "-1", "--singlepass"
+    type = :singlepass
+  when "-2", "--twopass"
+    type = :twopass
+  else
+    args << arg
+  end
+end
+
+app = Dupless::App.new args, type: type
 app.show_duplicates

@@ -1,8 +1,8 @@
-require 'test_helper'
 require 'dupless/element'
+require 'dupless/tc'
 
 module Dupless
-  class ElementTest < Minitest::Test
+  class ElementTest < TestCase
     def test_that_it_has_a_version_number
       refute_nil ::Dupless::VERSION
     end
