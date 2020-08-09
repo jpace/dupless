@@ -3,29 +3,56 @@
 require 'logue'
 
 module Dupless
-  class Match
+  module Match
+  end
+end
+
+module Dupless::Match
+  class Base
     include Logue::Loggable
 
     attr_reader :x
     attr_reader :y
-    attr_reader :type
-    attr_reader :matched
-    attr_reader :unmatched
     
-    def initialize x, y, type
+    def initialize x, y
       @x = x
       @y = y
-      @type = type
-      @matched = nil
-      @unmatched = nil
     end
 
     def to_s
-      "type: #{@type}"
+      "type: #{type}"
     end
 
     def inspect
       to_s
+    end
+  end
+
+  class Identical < Base
+    attr_reader :matched
+    
+    def initialize x, y, matched
+      super(x, y)
+      @matched = matched
+    end
+
+    def type
+      :identical
+    end
+  end
+
+  class Mismatch < Base
+    attr_reader :matched
+    attr_reader :unmatched
+    
+    def initialize x, y, matched, unmatched
+      super(x, y)
+      @matched = matched
+      @unmatched = unmatched
+    end
+
+    def type
+      :mismatch
     end
   end
 end

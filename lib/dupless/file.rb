@@ -12,7 +12,7 @@ module Dupless
     def initialize what
       @pathname = what.kind_of?(Pathname) ? what : Pathname.new(what)
       @size = nil
-      @bytes = nil
+      @bytes = Hash.new
       @checksum = nil
     end
 
@@ -21,7 +21,7 @@ module Dupless
     end
 
     def bytes num
-      @pathname.read num
+      @bytes[num] ||= @pathname.read num
     end
 
     def checksum

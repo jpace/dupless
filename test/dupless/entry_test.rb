@@ -1,15 +1,16 @@
+# -*- ruby -*-
+
 require 'dupless/entry'
-require 'dupless/mockfile'
 require 'dupless/tc'
 
 module Dupless
   class EntryTest < TestCase
     @@mockfiles = Array.new.tap do |ary|
-      ary << MockFile.new("1-x-7", 1, "x", 7)
-      ary << MockFile.new("2-x-7", 2, "x", 7)
-      ary << MockFile.new("1-y-7", 1, "y", 7)
-      ary << MockFile.new("1-x-8", 1, "x", 8)
-      ary << MockFile.new("1-x-7", 1, "x", 7)
+      ary << mockfile(1, "x", 7)
+      ary << mockfile(2, "x", 7)
+      ary << mockfile(1, "y", 7)
+      ary << mockfile(1, "x", 8)
+      ary << mockfile(1, "x", 7)
     end
 
     def self.files

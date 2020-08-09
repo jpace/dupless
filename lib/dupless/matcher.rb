@@ -36,13 +36,13 @@ module Dupless
       info "unmatched: #{unmatched}"
       info "others: #{others}"
 
-      type = if matched.size == x.children.size && others.compact.empty?
-                :identical
-              else
-                :mismatch
-             end
-
-      Match.new x, y, type
+      cls, args = if matched.size == x.children.size && others.compact.empty?
+                    [ Match::Identical, [ matched ] ]
+                  else
+                    [ Match::Mismatch, [ matched, unmatched ] ]
+                  end
+      
+      cls.new x, y, *args
     end
   end
 end

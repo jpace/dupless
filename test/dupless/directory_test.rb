@@ -1,13 +1,8 @@
 require 'dupless/directory'
-require 'dupless/mockfile'
 require 'dupless/tc'
 
 module Dupless
   class DirectoryTest < TestCase
-    def self.mockfile size, bytes, checksum
-      MockFile.create size, bytes, checksum
-    end
-    
     def self.build_params
       a = mockfile 1, "x", 7
       b = mockfile 2, "x", 7

@@ -17,7 +17,7 @@ module Dupless
     include Logue::Loggable
     
     def initialize(*args, type: :singlepass)
-      sf = Dupless::Set::Factory.new
+      sf = Set::Factory.new
       puts "type: #{type}"
       @set = sf.set type: type
       super(*args)
@@ -32,7 +32,7 @@ module Dupless
       @set.run
       dups = @set.duplicates
       puts "#dups: #{dups.size}"
-      return if true
+      # return if true
       dups.each_with_index do |dup, idx|
         puts "idx: #{idx}"
         dup.print

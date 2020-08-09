@@ -1,15 +1,10 @@
 require 'dupless/matcher'
 require 'dupless/match'
 require 'dupless/directory'
-require 'dupless/mockfile'
 require 'dupless/tc'
 
 module Dupless
   class MatcherTest < TestCase
-    def self.mockfile size, bytes, checksum
-      MockFile.create size, bytes, checksum
-    end
-    
     def self.build_params
       a = mockfile 1, "x", 7
       b = mockfile 2, "x", 7
@@ -36,7 +31,6 @@ module Dupless
     end
 
     param_test build_params.each do |exp, x, y|
-      puts
       m = Matcher.new.create x, y
       result = m.type
       assert_equal exp, result

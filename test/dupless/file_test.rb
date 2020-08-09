@@ -1,14 +1,13 @@
 require 'dupless/file'
-require 'dupless/mockfile'
 require 'dupless/tc'
 
 module Dupless
   class FileTest < TestCase
     def self.build_params
-      a = MockFile.new "", 1, "x", 7
-      b = MockFile.new "", 2, "x", 7
-      c = MockFile.new "", 1, "y", 7
-      d = MockFile.new "", 1, "x", 8
+      a = mockfile 1, "x", 7
+      b = mockfile 2, "x", 7
+      c = mockfile 1, "y", 7
+      d = mockfile 1, "x", 8
       
       [
         [  0, a, a ],
