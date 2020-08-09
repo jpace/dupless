@@ -8,6 +8,8 @@ module Dupless::Set
     attr_reader :files
     
     def initialize files: nil
+      super()
+      
       @files = files || Array.new
     end
 

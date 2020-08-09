@@ -7,17 +7,14 @@ require 'dupless/set/files'
 
 module Dupless::Set
   class SortedBySize < WithFiles
-    def duplicates
-      dups = Array.new
-
-      start = Time.now
-      info "start: #{start}"
-      
+    def execute
       by_size = @files.sort_by(&:size)
 
       info "after sort: #{Time.now}"
 
       nfiles = by_size.size
+      info "nfiles: #{nfiles}"
+      
       (0 ... nfiles).each do |i|
         x = by_size[i]
         next if x.nil?
@@ -27,23 +24,11 @@ module Dupless::Set
           next if y.nil?
           break if y.size > x.size
           if x.match? y
-            dup ||= Dupless::Entry.new([x])
-            dup << y
+            dup = add_duplicate dup, x, y
             by_size[j] = nil
           end
         end
-        if dup
-          dups << dup
-        end
       end
-
-      done = Time.now
-      info "done: #{done}"
-
-      diff = done - start
-      info "diff: #{diff}"
-      
-      dups
     end
   end
 end

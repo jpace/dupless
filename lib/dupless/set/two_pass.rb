@@ -4,14 +4,10 @@
 require 'dupless/set/files'
 
 module Dupless::Set
-  class TwoPassSet < WithFiles
-    def duplicates
+  class TwoPass < WithFiles
+    def execute
       # almost completely unoptimized:
-
-      start = Time.now
-      info "start: #{start}"
       
-      dups = Array.new
       nfiles = @files.size
       (0 ... nfiles).each do |i|
         # info "#{i}/#{nfiles} - at #{Time.now}"
@@ -24,23 +20,11 @@ module Dupless::Set
           y = @files[j]
           next if y.nil?
           if x.match? y
-            dup ||= Dupless::Entry.new([x])
-            dup << y
+            dup = add_duplicate dup, x, y
             @files[j] = nil
           end
         end
-        if dup
-          dups << dup
-        end
       end
-
-      done = Time.now
-      info "done: #{done}"
-
-      diff = done - start
-      info "diff: #{diff}"
-      
-      dups
     end
   end
 end

@@ -16,8 +16,10 @@ module Dupless
         process_directory pn
       elsif pn.file?
         process_file pn
-      else
+      elsif pn.exist?
         puts "unknown type: #{pn}"
+      else
+        # puts "skipping non-existing elment: #{pn}"
       end
     end
 

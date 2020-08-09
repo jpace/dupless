@@ -6,6 +6,8 @@ require 'dupless/set/base'
 module Dupless::Set
   class SinglePass < Base
     def initialize files: Array.new
+      super()
+      
       now = Time.now
       info "init: #{now}"
       
@@ -13,17 +15,17 @@ module Dupless::Set
       files.each do |f|
         @by_size[f.size] << f
       end
+
+      info "added: #{Time.now}"
+      
     end
 
     def << obj
       @by_size[obj.size] << obj
     end
     
-    def duplicates
-      start = Time.now
-      info "start: #{start}"
-      
-      dups = Array.new
+    def execute
+      info "@by_size.keys.size: #{@by_size.keys.size}"
 
       @by_size.each do |size, files|
         nfiles = files.size
@@ -36,28 +38,16 @@ module Dupless::Set
             y = files[j]
             next if y.nil?
             if x.match? y
-              dup ||= Dupless::Entry.new([x])
-              dup << y
+              dup = add_duplicate dup, x, y
               files[j] = nil
             end
           end
-          if dup
-            dups << dup
-          end
         end
       end
-
-      done = Time.now
-      info "done: #{done}"
-
-      diff = done - start
-      info "diff: #{diff}"
-      
-      dups
     end
 
     def to_s
-      "by_size.keys.size: #{@by_size.keys.size}"
+      "#keys: #{@by_size.keys.size}"
     end
   end
 end

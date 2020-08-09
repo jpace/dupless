@@ -52,7 +52,7 @@ module Dupless
     end
 
     param_test performance_build_params.each do |exp, set|
-      dups = set.duplicates
+      dups = set.run
       info "dups: #{dups}"
       assert_equal exp, dups
     end

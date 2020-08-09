@@ -29,9 +29,10 @@ module Dupless
     end
 
     def show_duplicates
+      @set.run
       dups = @set.duplicates
       puts "#dups: #{dups.size}"
-      # return if true
+      return if true
       dups.each_with_index do |dup, idx|
         puts "idx: #{idx}"
         dup.print

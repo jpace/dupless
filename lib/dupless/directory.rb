@@ -30,12 +30,11 @@ module Dupless
       children.each do |child|
         m = nil
         others.each_with_index do |obj, idx|
-          if obj
-            if child.match? obj
-              others[idx] = nil
-              m = [ child, obj ]
-              break
-            end
+          next unless obj
+          if child.match? obj
+            others[idx] = nil
+            m = [ child, obj ]
+            break
           end
         end
 
