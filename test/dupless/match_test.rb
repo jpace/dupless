@@ -1,9 +1,10 @@
+require 'dupless/match'
 require 'dupless/directory'
 require 'dupless/mockfile'
 require 'dupless/tc'
 
 module Dupless
-  class DirectoryTest < TestCase
+  class MatchTest < TestCase
     def self.mockfile size, bytes, checksum
       MockFile.create size, bytes, checksum
     end
@@ -18,16 +19,25 @@ module Dupless
       d2 = Directory.new "a-b", [ a, b ]
       d3 = Directory.new "b-a", [ b, a ]
       d4 = Directory.new "a-c", [ a, c ]
+      d5 = Directory.new "a-b-c", [ a, b, c ]
+      d6 = Directory.new "empty-1", [ ]
+      d7 = Directory.new "empty-2", [ ]
       
       [
-        [ [ a, b ], d1 ],
-        [ [ b, a ], d3 ],
-        [ [ a, c ], d4 ],
-      ]
+        [ :identical, d1, d2 ],
+        [ :identical, d1, d3 ],
+        [ :mismatch,  d1, d4 ],
+        [ :mismatch,  d1, d5 ],
+        [ :mismatch,  d5, d1 ],
+        [ :mismatch,  d1, d6 ],
+        [ :identical, d6, d7 ], 
+     ]
     end
 
-    param_test build_params.each do |exp, d|
-      result = d.children
+    param_test build_params.each do |exp, x, y|
+      puts
+      m = Match.new x, y
+      result = m.type
       assert_equal exp, result
     end
   end
