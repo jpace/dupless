@@ -29,9 +29,11 @@ module Dupless
     end
 
     def <=> other
+      nbytes = 10
+      
       comps = Array.new.tap do |a|
         a << Proc.new { size <=> other.size }
-        a << Proc.new { nbytes = 10; bytes(nbytes) <=> other.bytes(nbytes) }
+        a << Proc.new { bytes(nbytes) <=> other.bytes(nbytes) }
         a << Proc.new { checksum <=> other.checksum }
       end
 

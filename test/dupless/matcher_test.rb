@@ -1,10 +1,11 @@
+require 'dupless/matcher'
 require 'dupless/match'
 require 'dupless/directory'
 require 'dupless/mockfile'
 require 'dupless/tc'
 
 module Dupless
-  class MatchTest < TestCase
+  class MatcherTest < TestCase
     def self.mockfile size, bytes, checksum
       MockFile.create size, bytes, checksum
     end
@@ -25,26 +26,20 @@ module Dupless
       
       [
         [ :identical, d1, d2 ],
+        [ :identical, d1, d3 ],
         [ :mismatch,  d1, d4 ],
+        [ :mismatch,  d1, d5 ],
+        [ :mismatch,  d5, d1 ],
+        [ :mismatch,  d1, d6 ],
+        [ :identical, d6, d7 ], 
      ]
     end
 
-    param_test build_params.each do |type, x, y|
-      m = Match.new x, y, type
+    param_test build_params.each do |exp, x, y|
+      puts
+      m = Matcher.new.create x, y
       result = m.type
-      assert_equal type, result
-    end
-
-    param_test build_params.each do |type, x, y|
-      m = Match.new x, y, type
-      result = m.x
-      assert_equal x, result
-    end
-
-    param_test build_params.each do |type, x, y|
-      m = Match.new x, y, type
-      result = m.y
-      assert_equal y, result
+      assert_equal exp, result
     end
   end
 end
