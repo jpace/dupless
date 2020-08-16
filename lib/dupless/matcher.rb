@@ -8,8 +8,9 @@ module Dupless
     include Logue::Loggable
 
     def create x, y
-      matched = Array.new
-      unmatched = Array.new
+      x_only = Array.new
+      common = Array.new
+      y_only = Array.new
 
       others = y.children.dup
       x.children.each do |child|
@@ -19,27 +20,35 @@ module Dupless
           if child.match? obj
             others[idx] = nil
             m = [ child, obj ]
+            common << m
             break
           end
         end
 
-        info "m: #{m}"
-
-        if m
-          matched << m
-        else
-          unmatched << child
+        unless m
+          x_only << child
         end
+
+        info "m: #{m}"
       end
 
-      info "matched: #{matched}"
-      info "unmatched: #{unmatched}"
-      info "others: #{others}"
+      y_only = others.compact
+      info "x_only  : #{x_only}"
+      info "common  : #{common}"
+      info "y_only  : #{y_only}"
 
-      cls, args = if matched.size == x.children.size && others.compact.empty?
-                    [ Match::Identical, [ matched ] ]
+      instance x, y, x_only, common, y_only
+    end
+
+    def instance x, y, x_only, common, y_only
+      cls, args = if x_only.empty?
+                    if y_only.empty?
+                      [ Match::Identical, [ common ] ]
+                    else
+                      [ Match::Mismatch, [ x_only, common, y_only ] ]
+                    end
                   else
-                    [ Match::Mismatch, [ matched, unmatched ] ]
+                    [ Match::Mismatch, [ x_only, common, y_only ] ]
                   end
       
       cls.new x, y, *args

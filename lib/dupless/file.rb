@@ -2,6 +2,7 @@
 
 require 'pathname'
 require 'digest/md5'
+require 'dupless/cache'
 
 module Dupless
   class File
@@ -25,7 +26,13 @@ module Dupless
     end
 
     def checksum
-      @checksum ||= Digest::MD5.hexdigest(@pathname.read)
+      # puts "@pathname.to_s: #{@pathname.to_s}"
+      @checksum ||= Cache.instance.checksum self
+      # @checksum ||= digest
+    end
+
+    def digest
+      Digest::MD5.hexdigest @pathname.read
     end
 
     def <=> other
