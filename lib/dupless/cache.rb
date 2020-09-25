@@ -12,16 +12,12 @@ module Dupless
     def initialize
       @file = Pathname.new ENV["HOME"] + "/.dupless/cache.yaml"
       @changed = false
-      if @file.exist?
-        @entries = YAML::load_file @file
-      else
-        @entries = Hash.new
-      end
+      read
     end
 
     def read
       if @file.exist?
-        @entries = YAML::load @file
+        @entries = YAML::load_file @file
       else
         @entries = Hash.new
       end
@@ -38,19 +34,15 @@ module Dupless
 
     def checksum file
       name = file.pathname.to_s
-      # puts "name: #{name}"
       entry = @entries[name]
-      if entry
-        entry[:digest]
-      else
+      unless entry
         dig = file.digest
-        # puts "dig: #{dig}"
+        # only digest for now -- will later have timestamps, etc.
         entry = { digest: dig }
         @entries[name] = entry
         @changed = true
-        # write
-        entry[:digest]
       end
+      entry[:digest]
     end
   end
 end

@@ -1,8 +1,10 @@
 # -*- ruby -*-
 
 require 'dupless/file'
+require 'dupless/directories'
 require 'dupless/entry'
 require 'logue'
+require 'pp'
 
 module Dupless::Set
   class Base
@@ -10,25 +12,34 @@ module Dupless::Set
 
     def initialize
       @duplicates = nil
+      @dirs = nil
     end
 
     def duplicates
       @duplicates ||= run
     end
     
+    def duplicate_directories
+      unless @dirs
+        run
+      end
+      Dupless::Directories.new(@dirs).duplicates
+    end
+    
     def run
       @duplicates = Array.new
+      @dirs = Hash.new { |h, k| h[k] = Array.new }
       
       start = Time.now
-      info "start: #{start}"
+      # debug "start: #{start}"
       
       dups = execute
 
       done = Time.now
-      info "done: #{done}"
+      # debug "done: #{done}"
 
       diff = done - start
-      info "diff: #{diff}"
+      # debug "diff: #{diff}"
 
       @duplicates
     end
@@ -46,6 +57,23 @@ module Dupless::Set
         dup = Dupless::Entry.new([x])
         @duplicates << dup
       end
+
+      # info "x.pathname: #{x.pathname}"
+
+      xd = x.pathname.parent
+      # info "xd: #{xd}"
+
+      yd = y.pathname.parent
+      # info "yd: #{yd}"
+      
+      @dirs[xd] << x
+      @dirs[yd] << y
+      
+      # info "dirs.size: #{@dirs.size}"
+      
+      # info "dirs:"
+      # pp @dirs
+      
       dup << y
       dup
     end

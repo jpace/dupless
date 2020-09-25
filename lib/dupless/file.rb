@@ -26,9 +26,7 @@ module Dupless
     end
 
     def checksum
-      # puts "@pathname.to_s: #{@pathname.to_s}"
       @checksum ||= Cache.instance.checksum self
-      # @checksum ||= digest
     end
 
     def digest

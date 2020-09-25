@@ -3,21 +3,58 @@ require 'dupless/match/tc'
 
 module Dupless::Match
   class MismatchTest < TestCase
-    def self.build_params
-      [
-        [ D1, Mismatch.new(D1, D3, Array.new, Array.new, Array.new) ],
-        [ D2, Mismatch.new(D2, D3, Array.new, Array.new, Array.new) ],
-      ]
-    end
-
-    param_test build_params do |expx, m|
-      result = m.x
-      assert_equal expx, result
-    end
-
-    param_test build_params do |expx, m|
+    objects = [
+      # the x-only, etc., are not accurate to the definitions in tc.rb:
+      Mismatch.new(D1, D3, Array[F1], Array[F2], Array[F3]),
+      Mismatch.new(D2, D4, Array[F3], Array[F4], Array[F5]),
+    ]
+    
+    param_test [
+      objects[0],
+      objects[1]
+    ] do |m|
       result = m.type
       assert_equal :mismatch, result
+    end
+    
+    param_test [
+      [ D1, objects[0] ],
+      [ D2, objects[1] ]
+    ] do |exp, m|
+      result = m.x
+      assert_equal exp, result
+    end
+
+    param_test [
+      [ D3, objects[0] ],
+      [ D4, objects[1] ]
+    ] do |exp, m|
+      result = m.y
+      assert_equal exp, result
+    end
+
+    param_test [
+      [ Array[F1], objects[0] ],
+      [ Array[F3], objects[1] ],
+    ] do |exp, m|
+      result = m.x_only
+      assert_equal exp, result
+    end
+
+    param_test [
+      [ Array[F2], objects[0] ],
+      [ Array[F4], objects[1] ],
+    ] do |exp, m|
+      result = m.common
+      assert_equal exp, result
+    end
+
+    param_test [
+      [ Array[F3], objects[0] ],
+      [ Array[F5], objects[1] ],
+    ] do |exp, m|
+      result = m.y_only
+      assert_equal exp, result
     end
   end
 end

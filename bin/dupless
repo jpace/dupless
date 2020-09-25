@@ -9,9 +9,10 @@ require 'dupless/fdprocessor'
 require 'dupless/set/factory'
 require 'dupless/entry'
 require 'dupless/cache'
+require 'dupless/directories'
 require 'logue'
 
-Logue::Log::level = Logue::Level::DEBUG
+Logue::Log::level = Logue::Level::INFO
 
 module Dupless
   class App < FileDirProcessor
@@ -19,7 +20,7 @@ module Dupless
     
     def initialize(*args, type: :singlepass)
       sf = Set::Factory.new
-      puts "type: #{type}"
+      info "type: #{type}"
       @set = sf.set type: type
       super(*args)
       @set.run
@@ -32,10 +33,15 @@ module Dupless
       @set << df
     end
 
-    def show_duplicates
+    def show_duplicate_directories
+      dirs = @set.duplicate_directories
+      # puts "dirs: #{dirs}"
+    end
+
+    def show_duplicate_files
       dups = @set.duplicates
       puts "#dups: #{dups.size}"
-      return if true
+      # return if true
       dups.each_with_index do |dup, idx|
         puts "idx: #{idx}"
         dup.print
@@ -62,4 +68,4 @@ ARGV.each do |arg|
 end
 
 app = Dupless::App.new args, type: type
-app.show_duplicates
+app.show_duplicate_directories

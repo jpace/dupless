@@ -10,10 +10,10 @@ module Dupless::Set
     def execute
       by_size = @files.sort_by(&:size)
 
-      info "after sort: #{Time.now}"
+      debug "after sort: #{Time.now}"
 
       nfiles = by_size.size
-      info "nfiles: #{nfiles}"
+      debug "nfiles: #{nfiles}"
       
       (0 ... nfiles).each do |i|
         x = by_size[i]

@@ -8,6 +8,7 @@ module Dupless
       b = mockfile 2, "x", 7
       c = mockfile 1, "y", 7
       d = mockfile 1, "x", 8
+      e = mockfile 1, "x", 7
       
       [
         [  0, a, a ],
@@ -17,6 +18,7 @@ module Dupless
         [  1, c, a ],
         [ -1, a, d ],
         [  1, d, a ],
+        [  0, a, e ],
       ]
     end
 

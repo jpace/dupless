@@ -25,15 +25,19 @@ module Dupless
         [ :mismatch,  d1, d4 ],
         [ :mismatch,  d1, d5 ],
         [ :mismatch,  d5, d1 ],
-        [ :mismatch,  d1, d6 ],
-        [ :identical, d6, d7 ], 
+        [ nil,        d1, d6 ],
+        [ nil,        d6, d7 ], 
      ]
     end
 
     param_test build_params.each do |exp, x, y|
-      m = Matcher.new.create x, y
-      result = m.type
-      assert_equal exp, result
+      obj = Matcher.new
+      result = obj.create x, y
+      if exp
+        assert_equal exp, result.type
+      else
+        assert_nil result
+      end
     end
   end
 end

@@ -28,16 +28,18 @@ module Dupless
         unless m
           x_only << child
         end
-
-        info "m: #{m}"
       end
 
       y_only = others.compact
-      info "x_only  : #{x_only}"
-      info "common  : #{common}"
-      info "y_only  : #{y_only}"
+      debug "x_only  : #{x_only}"
+      debug "common  : #{common}"
+      debug "y_only  : #{y_only}"
 
-      instance x, y, x_only, common, y_only
+      if common.empty?
+        nil
+      else
+        instance x, y, x_only, common, y_only
+      end
     end
 
     def instance x, y, x_only, common, y_only

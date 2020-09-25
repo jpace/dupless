@@ -1,25 +1,45 @@
 require 'dupless/match/identical'
 require 'dupless/match/tc'
 require 'dupless/directory'
-require 'dupless/mockfile'
 
 module Dupless::Match
   class IdenticalTest < TestCase
-    def self.build_params
-      [
-        [ D1, Identical.new(D1, D2, Array.new) ],
-        [ D2, Identical.new(D2, D1, Array.new) ],
-      ]
-    end
-
-    param_test build_params do |expx, m|
-      result = m.x
-      assert_equal expx, result
-    end
-
-    param_test build_params do |expx, m|
+    objects = [
+      # the x-only, etc., are not accurate to the definitions in tc.rb:
+      Identical.new(D1, D3, Array[F1, F2]),
+      Identical.new(D2, D4, Array[F2, F1]),
+    ]
+    
+    param_test [
+      objects[0],
+      objects[1]
+    ] do |m|
       result = m.type
       assert_equal :identical, result
+    end
+    
+    param_test [
+      [ D1, objects[0] ],
+      [ D2, objects[1] ]
+    ] do |exp, m|
+      result = m.x
+      assert_equal exp, result
+    end
+
+    param_test [
+      [ D3, objects[0] ],
+      [ D4, objects[1] ]
+    ] do |exp, m|
+      result = m.y
+      assert_equal exp, result
+    end
+
+    param_test [
+      [ Array[F1, F2], objects[0] ],
+      [ Array[F2, F1], objects[1] ]
+    ] do |expx, m|
+      result = m.common
+      assert_equal expx, result
     end
   end
 end

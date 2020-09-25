@@ -14,5 +14,11 @@ module Dupless::Match
     def type
       :identical
     end
+
+    def write
+      puts "identical"
+      puts "x: #{x}"
+      puts "y: #{y}"
+    end
   end
 end

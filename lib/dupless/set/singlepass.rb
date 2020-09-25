@@ -17,7 +17,6 @@ module Dupless::Set
       end
 
       info "added: #{Time.now}"
-      
     end
 
     def << obj
