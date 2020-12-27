@@ -10,6 +10,7 @@ require 'dupless/set/factory'
 require 'dupless/entry'
 require 'dupless/cache'
 require 'dupless/directories'
+require 'dupless/matcher'
 require 'logue'
 
 Logue::Log::level = Logue::Level::INFO
@@ -18,14 +19,17 @@ module Dupless
   class App < FileDirProcessor
     include Logue::Loggable
     
-    def initialize(*args, type: :singlepass)
+    def initialize(*args, type: :singlepass, cachename: nil)
+      cachename ||= "/tmp/dupless.yaml"
+      cache = Cache.instance
+      cache.set cachename
       sf = Set::Factory.new
       info "type: #{type}"
       @set = sf.set type: type
       super(*args)
       @set.run
       info "writing: #{self}"
-      Cache.instance.write
+      cache.write
     end
 
     def process_file file 
@@ -34,7 +38,15 @@ module Dupless
     end
 
     def show_duplicate_directories
-      dirs = @set.duplicate_directories
+      filter = [
+        Dupless::Match::Identical
+      ]
+      dirs = @set.directories
+#      puts "dirs: #{dirs}"
+      dups = Dupless::Directories.new(dirs).duplicates filter: nil
+      puts "dups: #{dups}"
+      
+#      dirs = @set.duplicate_directories
       # puts "dirs: #{dirs}"
     end
 
@@ -43,8 +55,9 @@ module Dupless
       puts "#dups: #{dups.size}"
       # return if true
       dups.each_with_index do |dup, idx|
-        puts "idx: #{idx}"
-        dup.print
+        puts
+        # puts "idx: #{idx}"
+        dup.print format: :short
       end
       puts
     end
@@ -52,9 +65,11 @@ module Dupless
 end
 
 type = :sorted_by_size
+output = :files
+cache = nil
 
 args = Array.new
-ARGV.each do |arg|
+ARGV.each_with_index do |arg, idx|
   case arg
   when "-s", "--sorted-by-size"
     type = :sorted_by_size
@@ -62,10 +77,23 @@ ARGV.each do |arg|
     type = :singlepass
   when "-2", "--twopass"
     type = :twopass
+  when "--directories", "-d"
+    output = :directories
+  when "--files", "-f"
+    output = :files
+  when "--cache"
+    cache = ARGV[idx + 1]
+    ARGV[idx + 1] = nil
+  when nil
+  # ignore
   else
     args << arg
   end
 end
 
-app = Dupless::App.new args, type: type
-app.show_duplicate_directories
+app = Dupless::App.new args, type: type, cachename: cache
+if output == :directories
+  app.show_duplicate_directories
+else
+  app.show_duplicate_files
+end

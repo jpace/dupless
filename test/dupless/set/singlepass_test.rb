@@ -1,6 +1,4 @@
 require 'dupless/set/singlepass'
-require 'dupless/file'
-require 'dupless/entry'
 require 'dupless/set/tc'
 
 Logue::Log::level = Logue::Level::DEBUG

@@ -1,8 +1,3 @@
-#!/usr/bin/env ruby
-# -*- ruby -*-
-
-require 'dupless/file'
-require 'dupless/entry'
 require 'dupless/set/files'
 
 module Dupless::Set

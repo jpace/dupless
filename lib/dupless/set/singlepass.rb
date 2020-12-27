@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-# -*- ruby -*-
-
 require 'dupless/set/base'
 
 module Dupless::Set

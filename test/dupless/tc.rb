@@ -1,6 +1,7 @@
 require 'test_helper'
 require 'paramesan'
-require 'logue'
+require 'logue/log'
+require 'logue/loggable'
 require 'dupless/mockfile'
 
 Logue::Log::level = Logue::Level::DEBUG

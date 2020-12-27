@@ -1,5 +1,6 @@
-require 'dupless/match'
-require 'dupless/directory'
+require 'dupless/dir/match/identical'
+require 'dupless/dir/match/mismatch'
+require 'dupless/dir/directory'
 require 'dupless/mockfile'
 require 'dupless/tc'
 

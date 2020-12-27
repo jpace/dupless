@@ -1,22 +1,27 @@
-# -*- ruby -*-
-
-require 'dupless/file'
-require 'dupless/directories'
-require 'dupless/entry'
-require 'logue'
-require 'pp'
+require 'dupless/file/file'
+require 'dupless/dir/directories'
+require 'dupless/file/entry'
+require 'dupless/util/timer'
+require 'logue/loggable'
 
 module Dupless::Set
   class Base
     include Logue::Loggable
 
     def initialize
-      @duplicates = nil
+      @entries = nil
       @dirs = nil
     end
 
     def duplicates
-      @duplicates ||= run
+      @entries ||= run
+    end
+
+    def directories
+      unless @dirs
+        run
+      end
+      @dirs
     end
     
     def duplicate_directories
@@ -27,21 +32,12 @@ module Dupless::Set
     end
     
     def run
-      @duplicates = Array.new
+      @entries = Array.new
       @dirs = Hash.new { |h, k| h[k] = Array.new }
-      
-      start = Time.now
-      # debug "start: #{start}"
-      
-      dups = execute
 
-      done = Time.now
-      # debug "done: #{done}"
+      Dupless::Timer.new.run { execute }
 
-      diff = done - start
-      # debug "diff: #{diff}"
-
-      @duplicates
+      @entries
     end
 
     def execute
@@ -55,24 +51,17 @@ module Dupless::Set
     def add_duplicate dup, x, y
       unless dup
         dup = Dupless::Entry.new([x])
-        @duplicates << dup
+        @entries << dup
       end
 
-      # info "x.pathname: #{x.pathname}"
-
       xd = x.pathname.parent
-      # info "xd: #{xd}"
+      # debug "xd: #{xd}"
 
       yd = y.pathname.parent
-      # info "yd: #{yd}"
+      # debug "yd: #{yd}"
       
       @dirs[xd] << x
       @dirs[yd] << y
-      
-      # info "dirs.size: #{@dirs.size}"
-      
-      # info "dirs:"
-      # pp @dirs
       
       dup << y
       dup

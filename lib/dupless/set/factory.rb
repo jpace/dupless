@@ -1,5 +1,3 @@
-# -*- ruby -*-
-
 require 'dupless/set/two_pass'
 require 'dupless/set/sorted_by_size'
 require 'dupless/set/singlepass'

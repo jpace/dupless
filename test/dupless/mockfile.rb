@@ -1,4 +1,4 @@
-require 'dupless/file'
+require 'dupless/file/file'
 
 module Dupless
   class MockFile < File

@@ -1,4 +1,4 @@
-require 'dupless/file'
+require 'dupless/file/file'
 require 'dupless/tc'
 
 module Dupless

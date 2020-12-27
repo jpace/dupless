@@ -1,8 +1,6 @@
-# -*- ruby -*-
-
 require 'pathname'
 require 'digest/md5'
-require 'dupless/cache'
+require 'dupless/file/cache'
 
 module Dupless
   class File

@@ -1,6 +1,4 @@
 require 'dupless/set/sorted_by_size'
-require 'dupless/file'
-require 'dupless/entry'
 require 'dupless/set/tc'
 
 module Dupless::Set

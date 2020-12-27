@@ -1,7 +1,7 @@
 require 'dupless/set/base'
 require 'dupless/set/factory'
-require 'dupless/file'
-require 'dupless/entry'
+require 'dupless/file/file'
+require 'dupless/file/entry'
 require 'dupless/tc'
 
 module Dupless

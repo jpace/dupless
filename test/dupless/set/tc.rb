@@ -1,4 +1,4 @@
-require 'dupless/entry'
+require 'dupless/file/entry'
 require 'dupless/tc'
 require 'dupless/mockfiles'
 

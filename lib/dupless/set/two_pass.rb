@@ -1,17 +1,11 @@
-#!/usr/bin/env ruby
-# -*- ruby -*-
-
 require 'dupless/set/files'
 
 module Dupless::Set
   class TwoPass < WithFiles
     def execute
-      # almost completely unoptimized:
-      
+      # almost completely unoptimized:      
       nfiles = @files.size
       (0 ... nfiles).each do |i|
-        # info "#{i}/#{nfiles} - at #{Time.now}"
-        
         x = @files[i]
         next if x.nil?
         dup = nil

@@ -1,7 +1,5 @@
-# -*- ruby -*-
-
 require 'pathname'
-require 'logue'
+require 'logue/loggable'
 
 module Dupless
   class Directory

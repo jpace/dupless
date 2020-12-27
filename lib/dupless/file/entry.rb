@@ -1,18 +1,16 @@
-# -*- ruby -*-
-
-require 'dupless/file'
+require 'dupless/file/file'
 
 module Dupless
   class Entry
     attr_reader :files
     
-    def initialize(enum = nil)
+    def initialize(files = nil)
       @files = Array.new
-      @files.concat enum
+      @files.concat files
     end
 
-    def << obj
-      @files << obj
+    def << file
+      @files << file
     end
 
     def inspect
@@ -32,6 +30,10 @@ module Dupless
       when :long
         @files.each do |file|
           puts "file: #{file}"
+        end
+      when :short
+        @files.each do |file|
+          puts file
         end
       end
     end

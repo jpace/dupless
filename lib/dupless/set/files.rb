@@ -1,7 +1,4 @@
-# -*- ruby -*-
-
 require 'dupless/set/base'
-require 'logue'
 
 module Dupless::Set
   class WithFiles < Base

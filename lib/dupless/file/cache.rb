@@ -1,5 +1,3 @@
-# -*- ruby -*-
-
 require 'pathname'
 require 'digest/md5'
 require 'yaml'
@@ -8,9 +6,10 @@ require 'singleton'
 module Dupless
   class Cache
     include Singleton
-    
-    def initialize
-      @file = Pathname.new ENV["HOME"] + "/.dupless/cache.yaml"
+
+    def set fname = ENV["HOME"] + "/.dupless/cache.yaml"
+      @file = Pathname.new fname
+      puts "file: #{@file}"
       @changed = false
       read
     end
@@ -24,6 +23,7 @@ module Dupless
     end
 
     def write
+      puts "writing ..."
       return unless @changed
       dir = @file.parent
       unless dir.exist?
@@ -33,10 +33,11 @@ module Dupless
     end
 
     def checksum file
-      name = file.pathname.to_s
+      name = file.pathname.expand_path.to_s
       entry = @entries[name]
       unless entry
         dig = file.digest
+        puts "#{name} => #{dig}"
         # only digest for now -- will later have timestamps, etc.
         entry = { digest: dig }
         @entries[name] = entry

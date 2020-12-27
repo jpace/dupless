@@ -1,6 +1,4 @@
-# -*- ruby -*-
-
-require 'dupless/match/base'
+require 'dupless/dir/match/base'
 
 module Dupless::Match
   class Mismatch < Base
@@ -19,7 +17,7 @@ module Dupless::Match
       :mismatch
     end
 
-    def write
+    def write format: nil
       puts "mismatch"
       puts "x     : #{x.pathname}"
       puts "y     : #{y.pathname}"
@@ -30,19 +28,6 @@ module Dupless::Match
         puts "    #{elmt.first}"
         puts "    #{elmt.last}"
       end
-    end
-
-    def write_files name, dir, files
-      puts name
-      files.sort_by(&:pathname).each do |file|
-        fname = file.to_s.sub dir.pathname.to_s, "..."
-        puts "    #{fname}"
-      end
-    end
-
-    def write_file dir, file
-      name = file.to_s.sub dir.pathname.to_s, "..."
-      puts "    #{name}"
     end
   end
 end

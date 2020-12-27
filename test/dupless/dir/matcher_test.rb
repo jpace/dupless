@@ -1,6 +1,5 @@
-require 'dupless/matcher'
-require 'dupless/match'
-require 'dupless/directory'
+require 'dupless/dir/matcher'
+require 'dupless/dir/directory'
 require 'dupless/tc'
 
 module Dupless
@@ -20,13 +19,13 @@ module Dupless
       d7 = Directory.new "empty-2", [ ]
       
       [
-        [ :identical, d1, d2 ],
-        [ :identical, d1, d3 ],
-        [ :mismatch,  d1, d4 ],
-        [ :mismatch,  d1, d5 ],
-        [ :mismatch,  d5, d1 ],
-        [ nil,        d1, d6 ],
-        [ nil,        d6, d7 ], 
+        [ :identical,    d1, d2 ], 
+        [ :identical,    d1, d3 ], 
+        [ :mismatch,     d1, d4 ], 
+        [ :y_contains_x, d1, d5 ], 
+        [ :x_contains_y, d5, d1 ], 
+        [ nil,           d1, d6 ], 
+        [ nil,           d6, d7 ], 
      ]
     end
 
