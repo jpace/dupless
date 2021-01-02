@@ -30,7 +30,6 @@ module Dupless
           match = matcher.create xdir, ydir
 
           if match && (filter.nil? || filter.empty? || filter.include?(match.class))
-            puts "match: #{match.class}"
             match.write formatter: formatter
           end
         end
