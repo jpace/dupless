@@ -1,6 +1,4 @@
-require 'dupless/set/base'
 require 'dupless/set/factory'
-require 'dupless/file/file'
 require 'dupless/file/entry'
 require 'dupless/tc'
 
@@ -8,19 +6,18 @@ module Dupless
   class PerformanceTest < TestCase
     def self.files
       @@files ||= begin
-                    ary = Array.new
-                    (0 .. 5).each do |size|
-                      ('a' .. 'c').each do |bytes|
-                        (7 .. 9).each do |checksum|
-                          ary << mockfile(size, bytes, checksum)
+                    Array.new.tap do |a|
+                      (0 .. 5).each do |size|
+                        ('a' .. 'c').each do |bytes|
+                          (7 .. 9).each do |checksum|
+                            a << mockfile(size, bytes, checksum)
+                          end
                         end
                       end
+                      
+                      a << mockfile(2, 'a', 7)
+                      a << mockfile(2, 'a', 7)
                     end
-
-                    ary << mockfile(2, 'a', 7)
-                    ary << mockfile(2, 'a', 7)
-                    
-                    ary
                   end
     end
 
@@ -43,10 +40,9 @@ module Dupless
       end
     end
 
-    param_test performance_build_params.each do |exp, set|
-      dups = set.run
-      info "dups: #{dups}"
-      assert_equal exp, dups
+    param_test performance_build_params.each do |expected, set|
+      result = set.entries
+      assert_equal expected, result
     end
   end
 end

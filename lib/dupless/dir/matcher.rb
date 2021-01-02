@@ -38,25 +38,17 @@ module Dupless
 
       if common.empty?
         nil
-      else
-        instance x, y, x_only, common, y_only
+      elsif x_only.empty?
+        if y_only.empty?
+          Match::Identical.new x, y, common
+        else
+          Match::XContainsY.new y, x, y_only, common
+        end
+      elsif y_only.empty?
+        Match::XContainsY.new x, y, x_only, common
+      else                    
+        Match::Mismatch.new x, y, x_only, common, y_only
       end
-    end
-
-    def instance x, y, x_only, common, y_only
-      cls, args = if x_only.empty?
-                    if y_only.empty?
-                      [ Match::Identical, [ common ] ]
-                    else
-                      [ Match::YContainsX, [ y_only, common ] ]
-                    end
-                  elsif y_only.empty?
-                    [ Match::XContainsY, [ x_only, common ] ]
-                  else                    
-                    [ Match::Mismatch, [ x_only, common, y_only ] ]
-                  end
-      
-      cls.new x, y, *args
     end
   end
 end

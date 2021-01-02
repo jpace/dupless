@@ -3,18 +3,29 @@ require 'dupless/dir/directories'
 require 'dupless/file/entry'
 require 'dupless/util/timer'
 require 'logue/loggable'
+require 'set'
 
 module Dupless::Set
   class Base
     include Logue::Loggable
+    
+    attr_reader :matchdirs
 
     def initialize
       @entries = nil
       @dirs = nil
+      @matchdirs = Hash.new { |h, k| h[k] = Set.new }
     end
 
     def duplicates
-      @entries ||= run
+      entries
+    end
+
+    def entries
+      unless @entries
+        run
+      end
+      @entries
     end
 
     def directories
@@ -24,19 +35,10 @@ module Dupless::Set
       @dirs
     end
     
-    def duplicate_directories
-      unless @dirs
-        run
-      end
-      Dupless::Directories.new(@dirs).duplicates
-    end
-    
     def run
       @entries = Array.new
       @dirs = Hash.new { |h, k| h[k] = Array.new }
-
       Dupless::Timer.new.run { execute }
-
       @entries
     end
 
@@ -55,10 +57,12 @@ module Dupless::Set
       end
 
       xd = x.pathname.parent
-      # debug "xd: #{xd}"
-
       yd = y.pathname.parent
-      # debug "yd: #{yd}"
+
+      if xd != yd
+        dirs = [ xd, yd ].sort
+        @matchdirs[dirs.first] << dirs.last
+      end
       
       @dirs[xd] << x
       @dirs[yd] << y

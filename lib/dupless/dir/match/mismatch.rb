@@ -13,21 +13,8 @@ module Dupless::Match
       @y_only = y_only
     end
 
-    def type
-      :mismatch
-    end
-
-    def write format: nil
-      puts "mismatch"
-      puts "x     : #{x.pathname}"
-      puts "y     : #{y.pathname}"
-      write_files "x only", x, x_only
-      write_files "y only", y, y_only
-      puts "common"
-      common.each do |elmt|
-        puts "    #{elmt.first}"
-        puts "    #{elmt.last}"
-      end
+    def write formatter: nil
+      formatter.write_mismatch match: self
     end
   end
 end

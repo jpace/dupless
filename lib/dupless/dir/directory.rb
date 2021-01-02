@@ -1,10 +1,7 @@
 require 'pathname'
-require 'logue/loggable'
 
 module Dupless
   class Directory
-    include Logue::Loggable
-
     attr_reader :pathname
     
     def initialize what, children = nil

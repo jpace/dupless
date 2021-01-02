@@ -21,9 +21,9 @@ module Dupless::Set
       end
     end
 
-    param_test dups_build_params.each do |exp, set|
-      dups = set.run
-      assert_equal exp, dups
+    param_test dups_build_params.each do |expected, set|
+      result = set.entries
+      assert_equal expected, result
     end
   end
 end

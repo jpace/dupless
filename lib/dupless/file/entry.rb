@@ -25,17 +25,8 @@ module Dupless
       @files == other.files
     end
 
-    def print format: :long
-      case format
-      when :long
-        @files.each do |file|
-          puts "file: #{file}"
-        end
-      when :short
-        @files.each do |file|
-          puts file
-        end
-      end
+    def write formatter: nil
+      formatter.write entry: self
     end
   end
 end

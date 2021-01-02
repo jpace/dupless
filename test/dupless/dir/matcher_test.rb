@@ -19,13 +19,13 @@ module Dupless
       d7 = Directory.new "empty-2", [ ]
       
       [
-        [ :identical,    d1, d2 ], 
-        [ :identical,    d1, d3 ], 
-        [ :mismatch,     d1, d4 ], 
-        [ :y_contains_x, d1, d5 ], 
-        [ :x_contains_y, d5, d1 ], 
-        [ nil,           d1, d6 ], 
-        [ nil,           d6, d7 ], 
+        [ Match::Identical,  d1, d2 ], 
+        [ Match::Identical,  d1, d3 ], 
+        [ Match::Mismatch,   d1, d4 ], 
+        [ Match::XContainsY, d1, d5 ], 
+        [ Match::XContainsY, d5, d1 ], 
+        [ nil,               d1, d6 ], 
+        [ nil,               d6, d7 ], 
      ]
     end
 
@@ -33,7 +33,7 @@ module Dupless
       obj = Matcher.new
       result = obj.create x, y
       if exp
-        assert_equal exp, result.type
+        assert_equal exp, result.class
       else
         assert_nil result
       end

@@ -17,10 +17,6 @@ module Dupless::Match
       @y = y
     end
 
-    def to_s
-      "type: #{type}"
-    end
-
     def inspect
       to_s
     end

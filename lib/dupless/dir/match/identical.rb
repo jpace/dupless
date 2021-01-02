@@ -9,24 +9,9 @@ module Dupless::Match
       @common = common
     end
 
-    def type
-      :identical
-    end
-
-    def write format: nil
-      puts "identical"
-      puts "x     \"#{x.pathname}\""
-      puts "y     \"#{y.pathname}\""
-      if format == :sizes
-        puts "x.size #{x.pathname.children.size}"
-        puts "y.size #{y.pathname.children.size}"
-      elsif format == :summary
-      else
-        puts "common"
-        common.each do |elmt|
-          println elmt.first.to_s, elmt.last.to_s, 50
-        end
-      end
+    def write formatter: nil
+      formatter ||= Dupless::Match::BriefFormatter.new
+      formatter.write_identical match: self
     end
   end
 end

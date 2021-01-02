@@ -4,13 +4,15 @@ dir = File.dirname(File.dirname(File.expand_path(__FILE__)))
 libpath = dir + "/lib"
 $:.unshift libpath
 
-require 'dupless/file'
+require 'dupless/file/file'
 require 'dupless/fdprocessor'
 require 'dupless/set/factory'
-require 'dupless/entry'
-require 'dupless/cache'
-require 'dupless/directories'
-require 'dupless/matcher'
+require 'dupless/file/cache'
+require 'dupless/file/format'
+require 'dupless/dir/directories'
+require 'dupless/dir/matcher'
+require 'dupless/dir/matcher2'
+require 'dupless/dir/match/format'
 require 'logue'
 
 Logue::Log::level = Logue::Level::INFO
@@ -37,27 +39,31 @@ module Dupless
       @set << df
     end
 
-    def show_duplicate_directories
-      filter = [
-        Dupless::Match::Identical
-      ]
+    def show_duplicate_directories filter: nil, formatter: nil
+      dirs = @set.matchdirs
+      matcher = Dupless::Matcher2.new dirs
+      dups = matcher.duplicates filter: filter, formatter: formatter
+      info "dups: #{dups}"
+    end
+
+    def show_duplicate_directories_orig filter: nil
       dirs = @set.directories
-#      puts "dirs: #{dirs}"
-      dups = Dupless::Directories.new(dirs).duplicates filter: nil
+      puts "dirs: #{dirs.class}"
+      
+      dups = Dupless::Directories.new(dirs).duplicates_orig filter: filter
       puts "dups: #{dups}"
       
 #      dirs = @set.duplicate_directories
       # puts "dirs: #{dirs}"
     end
 
-    def show_duplicate_files
+    def show_duplicate_files formatter: nil
       dups = @set.duplicates
       puts "#dups: #{dups.size}"
-      # return if true
       dups.each_with_index do |dup, idx|
+        puts "dup: #{dup.class}"
         puts
-        # puts "idx: #{idx}"
-        dup.print format: :short
+        dup.write formatter: formatter
       end
       puts
     end
@@ -67,6 +73,10 @@ end
 type = :sorted_by_size
 output = :files
 cache = nil
+filter = Array.new
+impl = :show_duplicate_directories
+matchformat = Dupless::Match::BriefFormatter.new
+fileformat = Dupless::Files::BriefFormatter.new
 
 args = Array.new
 ARGV.each_with_index do |arg, idx|
@@ -84,6 +94,10 @@ ARGV.each_with_index do |arg, idx|
   when "--cache"
     cache = ARGV[idx + 1]
     ARGV[idx + 1] = nil
+  when "--identical"
+    filter << Dupless::Match::Identical
+  when "--orig"
+    impl = :show_duplicate_directories_orig
   when nil
   # ignore
   else
@@ -93,7 +107,7 @@ end
 
 app = Dupless::App.new args, type: type, cachename: cache
 if output == :directories
-  app.show_duplicate_directories
+  app.send impl, filter: filter, formatter: matchformat
 else
-  app.show_duplicate_files
+  app.show_duplicate_files formatter: fileformat
 end

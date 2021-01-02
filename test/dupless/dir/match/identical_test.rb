@@ -11,14 +11,6 @@ module Dupless::Match
     ]
     
     param_test [
-      objects[0],
-      objects[1]
-    ] do |m|
-      result = m.type
-      assert_equal :identical, result
-    end
-    
-    param_test [
       [ D1, objects[0] ],
       [ D2, objects[1] ]
     ] do |exp, m|

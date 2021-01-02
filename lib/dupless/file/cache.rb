@@ -2,28 +2,22 @@ require 'pathname'
 require 'digest/md5'
 require 'yaml'
 require 'singleton'
+require 'logue/loggable'
 
 module Dupless
   class Cache
     include Singleton
+    include Logue::Loggable
 
     def set fname = ENV["HOME"] + "/.dupless/cache.yaml"
       @file = Pathname.new fname
-      puts "file: #{@file}"
+      info "cache file: #{@file}"
       @changed = false
-      read
-    end
-
-    def read
-      if @file.exist?
-        @entries = YAML::load_file @file
-      else
-        @entries = Hash.new
-      end
+      @entries = @file.exist? ? YAML::load_file(@file) : Hash.new
     end
 
     def write
-      puts "writing ..."
+      info "writing ..."
       return unless @changed
       dir = @file.parent
       unless dir.exist?
@@ -32,17 +26,20 @@ module Dupless
       @file.write @entries.to_yaml
     end
 
+    def add_entry fname, digest
+      puts "#{fname} => #{digest}"
+      @changed = true
+      
+      # only digest for now -- will later have timestamps, etc.
+      @entries[fname] = { digest: digest }
+    end
+
     def checksum file
-      name = file.pathname.expand_path.to_s
-      entry = @entries[name]
-      unless entry
-        dig = file.digest
-        puts "#{name} => #{dig}"
-        # only digest for now -- will later have timestamps, etc.
-        entry = { digest: dig }
-        @entries[name] = entry
-        @changed = true
-      end
+      fname = file.pathname.expand_path.to_s
+      entry = @entries[fname] || begin
+                                   digest = file.digest
+                                   add_entry fname, digest
+                                 end
       entry[:digest]
     end
   end

@@ -1,6 +1,4 @@
 require 'dupless/set/factory'
-require 'dupless/set/base'
-require 'dupless/file/file'
 require 'dupless/file/entry'
 require 'dupless/tc'
 require 'dupless/mockfiles'
@@ -63,10 +61,10 @@ module Dupless
     end
 
     if false
-      param_test dir_dups_build_params.each do |exp, set|
-        dups = set.duplicate_directories
-        puts "dups: #{dups}"
-        assert_equal exp, dups
+      param_test dir_dups_build_params.each do |expected, set|
+        dirs = set.directories
+        result = Dupless::Directories.new(dirs).duplicates filter: nil
+        assert_equal expected, result
       end
     end
   end

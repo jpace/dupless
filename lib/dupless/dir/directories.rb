@@ -22,42 +22,32 @@ module Dupless
     # for y includes x (y.size > x.size)
     
     def duplicates filter: Array.new
+      if false
+        duplicates_orig filter: filter
+        return true
+      end
+      
       dups = Array.new
-      debug ">> dirs.size: #{@dirs.size}"
-      # debug "@dirs: #{@dirs}"
-
       isidentical = false
       
       matcher = Matcher.new
       dirnames = @dirs.keys.sort
-      
-      dirnames[0 .. -2].each_with_index do |dir, idx|
-        debug ">> dir: #{dir.class}"
 
-        xfiles = dir_files dir
-        debug "xfiles: #{xfiles}"
+      dirs = @dirs.keys.sort.collect do |name|
+        files = dir_files name
+        Directory.new name, files
+      end
 
-        x = Directory.new dir, xfiles
-        debug "x: #{x}"
-
-        nxfiles = xfiles.size
-        
-        dirnames[idx + 1 .. -1].each do |other|
-          debug "OTHER: #{other.class}"
-          
-          yfiles = dir_files other
-          debug "yfiles: #{yfiles}"
-
-          nyfiles = yfiles.size
+      dirs[0 .. -2].each_with_index do |xdir, idx|
+        nxfiles = xdir.children.size
+        dirs[idx + 1 .. -1].each do |ydir|
+          nyfiles = ydir.children.size
 
           if isidentical && nxfiles != nyfiles
             next
           end
 
-          y = Directory.new other, yfiles
-          debug "y: #{y}"
-
-          match = matcher.create x, y
+          match = matcher.create xdir, ydir
 
           if match && (filter.nil? || filter.empty? || filter.include?(match.class))
             match.write format: :summary
@@ -66,5 +56,44 @@ module Dupless
         end
       end
     end
+
+    # optimize for identical (same # of files)
+    # for x includes y (x.size > y.size)
+    # for y includes x (y.size > x.size)
+    
+    def duplicates_orig filter: Array.new
+      dups = Array.new
+
+      isidentical = false
+      
+      matcher = Matcher.new
+      dirnames = @dirs.keys.sort
+
+      dirnames[0 .. -2].each_with_index do |xname, idx|
+        xfiles = dir_files xname
+        xdir = Directory.new xname, xfiles
+
+        nxfiles = xfiles.size
+        
+        dirnames[idx + 1 .. -1].each do |yname|
+          yfiles = dir_files yname
+
+          nyfiles = yfiles.size
+
+          if isidentical && nxfiles != nyfiles
+            next
+          end
+
+          ydir = Directory.new yname, yfiles
+
+          match = matcher.create xdir, ydir
+
+          if match && (filter.nil? || filter.empty? || filter.include?(match.class))
+            match.write format: :summary
+            puts
+          end
+        end
+      end
+    end    
   end
 end
