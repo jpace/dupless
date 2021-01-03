@@ -21,7 +21,7 @@ module Dupless
     # for x includes y (x.size > y.size)
     # for y includes x (y.size > x.size)
     
-    def duplicates filter: Array.new
+    def duplicates filter: Array.new, formatter: nil
       if false
         duplicates_orig filter: filter
         return true
@@ -50,7 +50,7 @@ module Dupless
           match = matcher.create xdir, ydir
 
           if match && (filter.nil? || filter.empty? || filter.include?(match.class))
-            match.write format: :summary
+            match.write formatter: formatter
             puts
           end
         end
@@ -61,7 +61,7 @@ module Dupless
     # for x includes y (x.size > y.size)
     # for y includes x (y.size > x.size)
     
-    def duplicates_orig filter: Array.new
+    def duplicates_orig filter: Array.new, formatter: nil
       dups = Array.new
 
       isidentical = false
@@ -89,7 +89,7 @@ module Dupless
           match = matcher.create xdir, ydir
 
           if match && (filter.nil? || filter.empty? || filter.include?(match.class))
-            match.write format: :summary
+            match.write formatter: formatter
             puts
           end
         end

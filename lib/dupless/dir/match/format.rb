@@ -66,5 +66,22 @@ module Dupless::Match
       write_xy match: match
       puts
     end
+    
+    def write_contains match: nil
+      puts "contains"
+      write_xy match: match
+#      write_files name: "x only", files: match.only     
+#      write_common match: match
+      puts
+    end
+    
+    def write_mismatch match: nil
+      puts "mismatch"
+      write_xy match: match
+      puts "    x only: #{match.x_only.size}"
+      puts "    y only: #{match.y_only.size}"
+      puts "    common: #{match.common.size}"
+      puts
+    end
   end
 end

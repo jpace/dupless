@@ -12,29 +12,40 @@ module Dupless
     end
 
     def dir_files dir
-      dir.children.select(&:file?).collect { |child| Dupless::File.new child }
+      dir.children.collect do |kid|
+        if kid.file?
+          Dupless::File.new kid
+        else
+          return nil
+        end
+      end
     end
 
-    # optimize for identical (same # of files)
-    # for x includes y (x.size > y.size)
-    # for y includes x (y.size > x.size)
+    def directory dirname
+      files = dir_files dirname
+      files && Directory.new(dirname, files)
+    end
+
+    # optimize:
+    # for identical (same # of files)
+    # for contains (x.size > y.size)
     
     def duplicates filter: Array.new, formatter: nil
       matcher = Matcher.new
       @dirs.sort.each do |xname, others|
-        xfiles = dir_files xname
-        xdir = Directory.new xname, xfiles
+        xdir = directory xname
+        next unless xdir
+        
         others.each do |yname|
-          yfiles = dir_files yname
-          ydir = Directory.new yname, yfiles
+          ydir = directory yname
+          next unless ydir
+          
           match = matcher.create xdir, ydir
-
           if match && (filter.nil? || filter.empty? || filter.include?(match.class))
             match.write formatter: formatter
           end
         end
       end
-      nil
     end
   end
 end

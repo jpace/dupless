@@ -42,16 +42,16 @@ module Dupless
     def show_duplicate_directories filter: nil, formatter: nil
       dirs = @set.matchdirs
       matcher = Dupless::Matcher2.new dirs
-      dups = matcher.duplicates filter: filter, formatter: formatter
-      info "dups: #{dups}"
+      matcher.duplicates filter: filter, formatter: formatter
+#      info "dups: #{dups}"
     end
 
-    def show_duplicate_directories_orig filter: nil
+    def show_duplicate_directories_orig filter: nil, formatter: nil
       dirs = @set.directories
       puts "dirs: #{dirs.class}"
       
-      dups = Dupless::Directories.new(dirs).duplicates_orig filter: filter
-      puts "dups: #{dups}"
+      Dupless::Directories.new(dirs).duplicates_orig filter: filter, formatter: formatter
+#      puts "dups: #{dups}"
       
 #      dirs = @set.duplicate_directories
       # puts "dirs: #{dirs}"
@@ -96,6 +96,8 @@ ARGV.each_with_index do |arg, idx|
     ARGV[idx + 1] = nil
   when "--identical"
     filter << Dupless::Match::Identical
+  when "--contains"
+    filter << Dupless::Match::XContainsY
   when "--orig"
     impl = :show_duplicate_directories_orig
   when nil
