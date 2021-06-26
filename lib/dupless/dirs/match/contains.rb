@@ -1,4 +1,4 @@
-require 'dupless/dir/match/base'
+require 'dupless/dirs/match/base'
 
 module Dupless::Match
   class XContainsY < Base

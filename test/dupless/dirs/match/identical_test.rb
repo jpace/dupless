@@ -1,6 +1,6 @@
-require 'dupless/dir/match/identical'
+require 'dupless/dirs/match/identical'
 require 'dupless/dir/directory'
-require 'dupless/dir/match/tc'
+require 'dupless/dirs/match/tc'
 
 module Dupless::Match
   class IdenticalTest < TestCase

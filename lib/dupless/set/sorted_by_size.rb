@@ -3,12 +3,12 @@ require 'dupless/set/files'
 module Dupless::Set
   class SortedBySize < WithFiles
     def execute
+      info { "before sort: #{Time.now}" }
       by_size = @files.sort_by(&:size)
-
-      debug "after sort: #{Time.now}"
+      info { "after sort: #{Time.now}" }
 
       nfiles = by_size.size
-      debug "nfiles: #{nfiles}"
+      info { "nfiles: #{nfiles}" }
       
       (0 ... nfiles).each do |i|
         x = by_size[i]

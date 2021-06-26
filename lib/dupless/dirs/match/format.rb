@@ -1,4 +1,4 @@
-require 'dupless/dir/match/identical'
+require 'dupless/dirs/match/identical'
 
 module Dupless::Match
   class Formatter

@@ -6,15 +6,15 @@ module Dupless
 
     def run &blk
       start = Time.now
-      debug "start: #{start}"
+      info "start: #{start}"
       
       ret = blk.call
 
       done = Time.now
-      debug "done: #{done}"
+      info "done: #{done}"
 
       diff = done - start
-      debug "diff: #{diff}"
+      info "diff: #{diff}"
 
       ret
     end

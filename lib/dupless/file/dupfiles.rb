@@ -1,7 +1,7 @@
 require 'dupless/file/file'
 
 module Dupless
-  class Entry
+  class DuplicateFiles
     attr_reader :files
     
     def initialize(files = nil)

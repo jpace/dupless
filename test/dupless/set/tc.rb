@@ -1,4 +1,4 @@
-require 'dupless/file/entry'
+require 'dupless/file/dupfiles'
 require 'dupless/tc'
 require 'dupless/mockfiles'
 
@@ -8,8 +8,8 @@ module Dupless::Set
       Dupless::MockFiles.files
     end
 
-    def self.entry(*indices)
-      Dupless::Entry.new(indices.collect { |idx| files[idx] })
+    def self.dupfiles(*indices)
+      Dupless::DuplicateFiles.new(indices.collect { |idx| files[idx] })
     end
   end
 end

@@ -4,7 +4,7 @@ require 'dupless/set/singlepass'
 
 module Dupless::Set
   class Factory
-    def set files: Array.new, type: :twopass
+    def set files: Array.new, type: :twopass, matcher: Dupless::FileMatcher.new
       cls = case type
             when :twopass
               TwoPass
@@ -15,7 +15,8 @@ module Dupless::Set
             else
               raise "unknown set type: #{type.inspect}"
             end
-      cls.new files: files
+      puts "matcher.object_id: #{matcher.object_id}"
+      cls.new files: files, matcher: matcher
     end
   end
 end

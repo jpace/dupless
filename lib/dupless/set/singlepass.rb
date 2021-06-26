@@ -2,28 +2,28 @@ require 'dupless/set/base'
 
 module Dupless::Set
   class SinglePass < Base
-    def initialize files: Array.new
-      super()
+    def initialize files: Array.new, matcher: nil
+      super matcher: matcher
       
       now = Time.now
       info "init: #{now}"
       
-      @by_size = Hash.new { |h, k| h[k] = Array.new }
+      @size_to_files = Hash.new { |h, k| h[k] = Array.new }
       files.each do |f|
-        @by_size[f.size] << f
+        @size_to_files[f.size] << f
       end
 
       info "added: #{Time.now}"
     end
 
     def << obj
-      @by_size[obj.size] << obj
+      @size_to_files[obj.size] << obj
     end
     
     def execute
-      info "@by_size.keys.size: #{@by_size.keys.size}"
+      info "@size_to_files.keys.size: #{@size_to_files.keys.size}"
 
-      @by_size.each do |size, files|
+      @size_to_files.each do |size, files|
         nfiles = files.size
         next if nfiles < 2
         (0 ... nfiles - 1).each do |i|
@@ -43,7 +43,7 @@ module Dupless::Set
     end
 
     def to_s
-      "#keys: #{@by_size.keys.size}"
+      "#keys: #{@size_to_files.keys.size}"
     end
   end
 end

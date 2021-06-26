@@ -3,6 +3,7 @@ require 'digest/md5'
 require 'yaml'
 require 'singleton'
 require 'logue/loggable'
+require 'dupless/util/timer'
 
 module Dupless
   class Cache
@@ -13,7 +14,9 @@ module Dupless
       @file = Pathname.new fname
       info "cache file: #{@file}"
       @changed = false
-      @entries = @file.exist? ? YAML::load_file(@file) : Hash.new
+      Dupless::Timer.new.run do
+        @entries = @file.exist? ? YAML::load_file(@file) : Hash.new
+      end
     end
 
     def write

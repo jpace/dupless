@@ -4,9 +4,8 @@ module Dupless::Set
   class WithFiles < Base
     attr_reader :files
     
-    def initialize files: nil
-      super()
-      
+    def initialize files: nil, matcher: nil
+      super matcher: matcher
       @files = files || Array.new
     end
 

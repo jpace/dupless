@@ -1,5 +1,5 @@
-require 'dupless/dir/match/mismatch'
-require 'dupless/dir/match/tc'
+require 'dupless/dirs/match/mismatch'
+require 'dupless/dirs/match/tc'
 
 module Dupless::Match
   class MismatchTest < TestCase

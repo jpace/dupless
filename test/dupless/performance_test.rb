@@ -1,15 +1,20 @@
 require 'dupless/set/factory'
-require 'dupless/file/entry'
+require 'dupless/file/dupfiles'
+require 'dupless/file/filematcher'
 require 'dupless/tc'
 
 module Dupless
   class PerformanceTest < TestCase
     def self.files
+      fromsize, tosize = 0, 5
+      frombytes, tobytes = 'a', 'c'
+      fromsum, tosum = 7, 9
+      
       @@files ||= begin
                     Array.new.tap do |a|
-                      (0 .. 5).each do |size|
-                        ('a' .. 'c').each do |bytes|
-                          (7 .. 9).each do |checksum|
+                      (fromsize .. tosize).each do |size|
+                        (frombytes .. tobytes).each do |bytes|
+                          (fromsum .. tosum).each do |checksum|
                             a << mockfile(size, bytes, checksum)
                           end
                         end
@@ -21,8 +26,8 @@ module Dupless
                   end
     end
 
-    def self.entry(*indices)
-      Entry.new(indices.collect { |idx| files[idx] })
+    def self.dupfiles(*indices)
+      DuplicateFiles.new(indices.collect { |idx| files[idx] })
     end
 
     def self.performance_build_params
@@ -34,14 +39,15 @@ module Dupless
       end
       info "files.size: #{files.size}"
       sf = Set::Factory.new
-      set = sf.set files: files, type: :sorted_by_size
+      set = sf.set files: files, type: :sorted_by_size, matcher: Dupless::FileMatcher.new
+      set.run
       Array.new.tap do |ary|
-        ary << [ [ entry(18, -2, -1) ], set ]
+        ary << [ [ dupfiles(18, -2, -1) ], set ]
       end
     end
 
     param_test performance_build_params.each do |expected, set|
-      result = set.entries
+      result = set.matcher.duplicates
       assert_equal expected, result
     end
   end
