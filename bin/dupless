@@ -87,6 +87,7 @@ ARGV.each_with_index do |arg, idx|
       filter[:contains] = false
       filter[:mismatch] = false
       filter[:identical] = true
+      filter[:strategy] = Dupless::Dirs::IdenticalMatchStrategy.new
     else
       filter[:identical] = true
     end
@@ -104,8 +105,6 @@ ARGV.each_with_index do |arg, idx|
     args << arg
   end
 end
-
-filter
 
 if output == :directories
   cmp = Dupless::DirCompare.new(args, type: type, cachename: "/tmp/dupless.yaml")

@@ -9,7 +9,6 @@ module Dupless
     end
 
     def show_duplicates filter: Hash.new, formatter: nil
-      puts "dircompare ... filter: #{filter}"
       dirs = @set.matcher.matchdirs
       matcher = Dupless::Directories.new dirs
       matcher.duplicates filter: filter, formatter: formatter

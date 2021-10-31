@@ -1,4 +1,4 @@
-require 'dupless/dirs/dirsmatcher'
+require 'dupless/dirs/match/matcher'
 require 'dupless/dir/directory'
 require 'dupless/tc'
 
@@ -32,6 +32,8 @@ module Dupless
 
       param_test build_params.each do |exp, x, y|
         obj = Matcher.new
+        puts "obj: #{obj}"
+        
         result = obj.match x, y
         if exp
           assert_equal exp, result.class

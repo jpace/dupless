@@ -1,4 +1,4 @@
-require 'dupless/dirs/dirsmatcher'
+require 'dupless/dirs/match/matcher'
 require 'dupless/dir/directory'
 require 'dupless/tc'
 
@@ -32,8 +32,6 @@ module Dupless
       def self.build_match_identical_params
         puts "files: #{files.size}"
 
-        size = 100
-
         offset_size = Array.new.tap do |a|
           a << [ 0, 1 ]
           a << [ 0, 1 ]
@@ -46,8 +44,13 @@ module Dupless
           end
         end
 
-        dirs = offset_size.collect do |offpct, lenpct|
-          dir size, offpct, lenpct
+        size = 10
+        dirs = Array.new.tap do |a|
+          [ 10, 25, 50, 100 ].each do |size|
+            offset_size.each do |offpct, lenpct|
+              a << dir(size, offpct, lenpct)
+            end
+          end
         end
 
         dirs.permutation(2).tap do |n|
@@ -57,7 +60,8 @@ module Dupless
 
       def run_test params, matcher, ntimes, x, y
         strcls = matcher.strategy.class.to_s.sub(%r{.*::(\w+?)[A-Z].*}) { $1 }
-        # printf "%-8s | ", strcls
+        printf "%8d | ", x.children.size
+        printf "%8d | ", y.children.size
         
         start = Time.new
         result = nil
@@ -73,7 +77,7 @@ module Dupless
         { x: x, y: y, result: result, ntimes: ntimes, duration: duration }
       end
 
-      def test_all
+      def xtest_all
         params = self.class.build_match_identical_params
 
         strategy = if false
@@ -90,7 +94,7 @@ module Dupless
         tests = Array.new
         iter = 0
         niterations = params.size
-        ntimes = 40
+        ntimes = 20
         
         params.each do |x, y|
           printf "%8d | %8d | ", iter, niterations

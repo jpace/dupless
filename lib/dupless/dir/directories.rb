@@ -1,6 +1,6 @@
 require 'dupless/file/file'
 require 'dupless/dir/directory'
-require 'dupless/dirs/dirsmatcher'
+require 'dupless/dirs/match/matcher'
 require 'logue/loggable'
 
 module Dupless
@@ -32,8 +32,7 @@ module Dupless
     # for contains (x.size > y.size)
     
     def duplicates filter: Hash.new, formatter: nil
-      puts "directories ... filter: #{filter}"
-      puts "directories ... filter: #{filter.class}"
+      puts "filter: #{filter}"
       matcher = Dupless::Dirs::Matcher.new filter
       @dirs.sort.each do |xname, others|
         xdir = directory xname

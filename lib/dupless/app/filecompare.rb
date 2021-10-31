@@ -8,8 +8,6 @@ module Dupless
     end
 
     def show_duplicates filter: nil, formatter: nil
-      info "@set.matcher: #{@set.matcher.class}"
-      info "@set.matcher.object_id: #{@set.matcher.object_id}"
       dups = @set.matcher.duplicates
       info "#dups: #{dups.size}"
       dups.each_with_index do |dup, idx|

@@ -15,7 +15,6 @@ module Dupless::Set
             else
               raise "unknown set type: #{type.inspect}"
             end
-      puts "matcher.object_id: #{matcher.object_id}"
       cls.new files: files, matcher: matcher
     end
   end
