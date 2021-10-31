@@ -21,29 +21,30 @@ module Dupless
         @identical = options.fetch :identical, true
         @contains = options.fetch :contains, true
         @mismatch = options.fetch :mismatch, true
-        @strategy = options.fetch :strategy, MatchStrategy.new
+        @strategy = options.fetch :strategy, MatchStrategyComplete.new
         puts "@strategy: #{@strategy}"
       end
 
       def match x, y
-        m = @strategy.match x, y
-        return nil unless m
-        create_match x, y, m
-      end
-
-      def create_match x, y, m
-        if m.common.empty?
-          nil
-        elsif m.x_only.empty?
-          if m.y_only.empty?
-            @identical && Match::Identical.new(x, y, m.common)
-          else
-            @contains && Match::XContainsY.new(y, x, m.y_only, m.common)
+        if m = @strategy.match(x, y)
+          common = m.common
+          xonly = m.x_only
+          yonly = m.y_only
+          
+          if common.empty?
+            nil
+          elsif xonly.empty?
+            if yonly.empty?
+              @identical && Match::Identical.new(x, y, m.common)
+            else
+              # swapping x and y here, since y contains x
+              @contains && Match::XContainsY.new(y, x, yonly, common)
+            end
+          elsif m.y_only.empty?
+            @contains && Match::XContainsY.new(x, y, xonly, common)
+          else                    
+            @mismatch && Match::Mismatch.new(x, y, xonly, common, yonly)
           end
-        elsif m.y_only.empty?
-          @contains && Match::XContainsY.new(x, y, m.x_only, m.common)
-        else                    
-          @mismatch && Match::Mismatch.new(x, y, m.x_only, m.common, m.y_only)
         end
       end
 

@@ -42,7 +42,7 @@ module Dupless
         end
       end
 
-      def self.build_create_match_params
+      def self.build_match_params
         a = mockfile 1, "x", 7
         b = mockfile 2, "x", 7
         c = mockfile 1, "y", 7
@@ -66,7 +66,7 @@ module Dupless
         ]
       end
 
-      param_test build_create_match_params.each do |exp, type, x, y|
+      param_test build_match_params.each do |exp, type, x, y|
         args = Hash.new
         if type
           args[type] = false

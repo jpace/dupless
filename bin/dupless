@@ -87,7 +87,7 @@ ARGV.each_with_index do |arg, idx|
       filter[:contains] = false
       filter[:mismatch] = false
       filter[:identical] = true
-      filter[:strategy] = Dupless::Dirs::IdenticalMatchStrategy.new
+      filter[:strategy] = Dupless::Dirs::MatchStrategyIdenticalOnly.new
     else
       filter[:identical] = true
     end
