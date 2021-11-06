@@ -33,7 +33,7 @@ module Dupless::Set
           (i + 1 ... nfiles).each do |j|
             y = files[j]
             next if y.nil?
-            if x.match? y
+            if x == y
               dup = add_duplicate dup, x, y
               files[j] = nil
             end

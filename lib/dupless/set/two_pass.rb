@@ -13,7 +13,7 @@ module Dupless::Set
           next if i == j
           y = @files[j]
           next if y.nil?
-          if x.match? y
+          if x == y
             dup = add_duplicate dup, x, y
             @files[j] = nil
           end

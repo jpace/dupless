@@ -17,12 +17,10 @@ module Dupless
       attr_reader :strategy
 
       def initialize options = Hash.new
-        puts "options: #{options}"
         @identical = options.fetch :identical, true
         @contains = options.fetch :contains, true
         @mismatch = options.fetch :mismatch, true
         @strategy = options.fetch :strategy, MatchStrategyComplete.new
-        puts "@strategy: #{@strategy}"
       end
 
       def match x, y

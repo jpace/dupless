@@ -48,10 +48,6 @@ module Dupless
       comps.last.call
     end
 
-    def match? other
-      self == other
-    end
-
     def to_s
       pathname.to_s
     end

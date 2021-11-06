@@ -18,7 +18,7 @@ module Dupless::Set
           y = by_size[j]
           next if y.nil?
           break if y.size > x.size
-          if x.match? y
+          if x == y
             dup = add_duplicate dup, x, y
             by_size[j] = nil
           end

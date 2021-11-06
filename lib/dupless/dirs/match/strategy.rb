@@ -6,7 +6,7 @@ module Dupless
       def match_child others, child
         others.each_with_index do |obj, idx|
           next unless obj
-          if child.match? obj
+          if child == obj
             others[idx] = nil
             return [ child, obj ]
           end
