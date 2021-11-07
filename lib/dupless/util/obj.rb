@@ -7,5 +7,9 @@ module Dupless
         "#{field}: #{obj.send(field).to_s}"
       end.join ", "      
     end
+
+    def assert_not_null name, value
+      raise "#{name} cannot be null" unless value
+    end
   end
 end

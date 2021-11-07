@@ -4,16 +4,12 @@ module Dupless::Set
   class SinglePass < Base
     def initialize files: Array.new, matcher: nil
       super matcher: matcher
-      
-      now = Time.now
-      info "init: #{now}"
-      
+      info { "init: #{Time.now}" }
       @size_to_files = Hash.new { |h, k| h[k] = Array.new }
       files.each do |f|
         @size_to_files[f.size] << f
       end
-
-      info "added: #{Time.now}"
+      info { "added: #{Time.now}" }
     end
 
     def << obj
@@ -21,8 +17,7 @@ module Dupless::Set
     end
     
     def execute
-      info "@size_to_files.keys.size: #{@size_to_files.keys.size}"
-
+      info { "@size_to_files.keys.size: #{@size_to_files.keys.size}" }
       @size_to_files.each do |size, files|
         nfiles = files.size
         next if nfiles < 2

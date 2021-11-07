@@ -1,6 +1,6 @@
 require 'dupless/app/compare'
 require 'dupless/dir/dirmatcher'
-require 'dupless/dir/directories'
+require 'dupless/dirs/directories'
 
 module Dupless
   class DirCompare < Compare

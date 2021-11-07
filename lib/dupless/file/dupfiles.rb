@@ -26,7 +26,7 @@ module Dupless
     end
 
     def write formatter: nil
-      formatter.write entry: self
+      formatter.write_files files: @files
     end
   end
 end

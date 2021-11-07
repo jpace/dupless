@@ -1,4 +1,4 @@
-require 'dupless/dir/directories'
+require 'dupless/dirs/directories'
 require 'dupless/util/timer'
 require 'logue/loggable'
 require 'set'
@@ -25,11 +25,11 @@ module Dupless
       @dir_to_files[xd] << x
       @dir_to_files[yd] << y
 
-     if xd != yd
-       dirs = [ xd, yd ].sort
-       @matchdirs[dirs.first] << dirs.last
-     end
-     dup
+      if xd != yd
+        dirs = [ xd, yd ].sort
+        @matchdirs[dirs.first] << dirs.last
+      end
+      dup
     end
   end
 end

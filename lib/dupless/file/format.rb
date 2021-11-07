@@ -7,8 +7,8 @@ end
 
 module Dupless::Files
   class Formatter
-    def write entry: nil
-      entry.files.each_with_index do |file, idx|
+    def write_files files: nil
+      files.each_with_index do |file, idx|
         write_file file: file, index: idx
       end
       puts

@@ -1,4 +1,4 @@
-require 'dupless/set/files'
+require 'dupless/set/base'
 
 module Dupless::Set
   class SortedBySize < WithFiles

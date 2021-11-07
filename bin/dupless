@@ -4,59 +4,14 @@ dir = File.dirname(File.dirname(File.expand_path(__FILE__)))
 libpath = dir + "/lib"
 $:.unshift libpath
 
-require 'dupless/file/file'
-require 'dupless/fdprocessor'
 require 'dupless/set/factory'
-require 'dupless/file/cache'
 require 'dupless/file/format'
-require 'dupless/file/filematcher'
-require 'dupless/dir/dirmatcher'
-require 'dupless/dir/directories'
 require 'dupless/dirs/match/format'
 require 'dupless/app/dircompare'
 require 'dupless/app/filecompare'
 require 'logue'
 
 Logue::Log::level = Logue::Level::INFO
-
-module Dupless
-  class App < FileDirProcessor
-    include Logue::Loggable
-    
-    def initialize(*args, type: :singlepass, cachename: nil)
-      cachename ||= "/tmp/dupless.yaml"
-      cache = Cache.instance
-      cache.set cachename
-      sf = Set::Factory.new
-      info "type: #{type}"
-      @set = sf.set type: type
-      super(*args)
-      @set.run
-      info "writing: #{self}"
-      cache.write
-    end
-
-    def process_file file 
-      df = Dupless::File.new file
-      @set << df
-    end
-
-    def show_duplicate_directories filter: nil, formatter: nil
-      dirs = @set.dir_matcher.matchdirs
-      matcher = Dupless::Directories.new dirs
-      matcher.duplicates filter: filter, formatter: formatter
-    end
-
-    def show_duplicate_files formatter: nil
-      dups = @set.file_matcher.duplicates
-      puts "#dups: #{dups.size}"
-      dups.each_with_index do |dup, idx|
-        dup.write formatter: formatter
-      end
-      puts
-    end
-  end
-end
 
 type = :sorted_by_size
 output = :files
@@ -87,7 +42,7 @@ ARGV.each_with_index do |arg, idx|
       filter[:contains] = false
       filter[:mismatch] = false
       filter[:identical] = true
-      filter[:strategy] = Dupless::Dirs::MatchStrategyIdenticalOnly.new
+      filter[:strategy] = Dupless::Dirs::MatchStrategy::IdenticalOnly.new
     else
       filter[:identical] = true
     end

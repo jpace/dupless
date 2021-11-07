@@ -20,7 +20,7 @@ module Dupless
         @identical = options.fetch :identical, true
         @contains = options.fetch :contains, true
         @mismatch = options.fetch :mismatch, true
-        @strategy = options.fetch :strategy, MatchStrategyComplete.new
+        @strategy = options.fetch :strategy, MatchStrategy::Complete.new
       end
 
       def match x, y
