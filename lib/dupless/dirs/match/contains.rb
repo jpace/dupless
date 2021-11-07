@@ -14,5 +14,17 @@ module Dupless::Match
     def write formatter: nil
       formatter.write_contains match: self
     end
+
+    def to_s
+      to_string self, :common, :only
+    end
+
+    def == other
+      cmp = super
+      if cmp.nonzero?
+        cmp = compare self, other, :common, :only
+      end
+      cmp
+    end
   end
 end

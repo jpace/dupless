@@ -13,5 +13,17 @@ module Dupless::Match
       formatter ||= Dupless::Match::BriefFormatter.new
       formatter.write_identical match: self
     end
+
+    def to_s
+      to_string self, :common
+    end
+    
+    def == other
+      cmp = super
+      if cmp.nonzero?
+        cmp = compare self, other, :common
+      end
+      cmp
+    end
   end
 end

@@ -24,26 +24,40 @@ module Dupless
       end
 
       def match x, y
-        if m = @strategy.match(x, y)
-          common = m.common
-          xonly = m.x_only
-          yonly = m.y_only
-          
-          if common.empty?
-            nil
-          elsif xonly.empty?
-            if yonly.empty?
-              @identical && Match::Identical.new(x, y, m.common)
-            else
-              # swapping x and y here, since y contains x
-              @contains && Match::XContainsY.new(y, x, yonly, common)
-            end
-          elsif m.y_only.empty?
-            @contains && Match::XContainsY.new(x, y, xonly, common)
-          else                    
-            @mismatch && Match::Mismatch.new(x, y, xonly, common, yonly)
-          end
+        if fields = @strategy.match(x, y)
+          create_match fields, x, y
         end
+      end
+
+      def create_match fields, x, y
+        if fields.x_only.empty?
+          if fields.y_only.empty?
+            create_identical_match fields, x, y
+          else
+            # swapping x and y here, since y contains x
+            create_contains_match fields, x, y, swap: true
+          end
+        elsif fields.y_only.empty?
+          create_contains_match fields, x, y, swap: false
+        else                    
+          create_mismatch fields, x, y
+        end
+      end
+
+      def create_identical_match fields, x, y
+        @identical && Match::Identical.new(x, y, fields.common)
+      end
+
+      def create_contains_match fields, x, y, swap: false
+        if @contains
+          args = swap ? [ y, x, fields.y_only ] : [ x, y, fields.x_only ]
+          args << fields.common
+          Match::XContainsY.new(*args)
+        end
+      end
+
+      def create_mismatch fields, x, y
+        @mismatch && Match::Mismatch.new(x, y, fields.x_only, fields.common, fields.y_only)
       end
 
       def to_s

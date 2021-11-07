@@ -1,6 +1,10 @@
+require 'dupless/util/obj'
+
 module Dupless
   module Dirs
     class MatchFields
+      include Obj
+      
       attr_accessor :x_only
       attr_accessor :common
       attr_accessor :y_only
@@ -20,6 +24,14 @@ module Dupless
           end
         end
         true
+      end
+
+      def to_s
+        to_string self, :x_only, :common, :y_only
+      end
+
+      def == other
+        compare self, other, :x_only, :common, :y_only
       end
     end
   end

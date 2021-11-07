@@ -1,5 +1,5 @@
 require 'dupless/file/file'
-require 'dupless/fdprocessor'
+require 'dupless/io/fdprocessor'
 require 'dupless/set/factory'
 require 'dupless/file/cache'
 require 'logue'

@@ -16,5 +16,13 @@ module Dupless::Match
     def write formatter: nil
       formatter.write_mismatch match: self
     end
+
+    def == other
+      cmp = super
+      if cmp == 0
+        cmp = compare self, other, :common, :x_only, :y_only
+      end
+      cmp
+    end
   end
 end
