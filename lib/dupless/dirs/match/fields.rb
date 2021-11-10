@@ -15,17 +15,6 @@ module Dupless
         @y_only = y_only
       end
 
-      def == other
-        return false unless other && other.class == self.class
-        fields = [ :x_only, :common, :y_only ]
-        fields.each do |field|
-          if send(field) != other.send(field)
-            return false
-          end
-        end
-        true
-      end
-
       def to_s
         to_string self, :x_only, :common, :y_only
       end
