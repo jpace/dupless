@@ -1,5 +1,3 @@
-require 'logue/loggable'
-
 module Dupless
   module Obj
     def to_string obj, *fields
@@ -12,7 +10,7 @@ module Dupless
     def compare x, y, *fields
       fields.each do |field|
         cmp = x.send(field) <=> y.send(field)
-        return cmp if cmp.nonzero?
+        return cmp if cmp && cmp.nonzero?
       end
       0
     end

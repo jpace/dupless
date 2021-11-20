@@ -4,11 +4,11 @@ require 'dupless/tc'
 module Dupless
   class DuplicateFilesTest < TestCase
     @@mockfiles = Array.new.tap do |ary|
-      ary << mockfile(1, "x", 7)
-      ary << mockfile(2, "x", 7)
-      ary << mockfile(1, "y", 7)
-      ary << mockfile(1, "x", 8)
-      ary << mockfile(1, "x", 7)
+      ary << Files::X17
+      ary << Files::X27
+      ary << Files::Y17
+      ary << Files::X18
+      ary << Files::X17
     end
 
     def self.files

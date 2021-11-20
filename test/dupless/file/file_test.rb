@@ -4,21 +4,16 @@ require 'dupless/tc'
 module Dupless
   class FileTest < TestCase
     def self.build_params
-      a = mockfile 1, "x", 7
-      b = mockfile 2, "x", 7
-      c = mockfile 1, "y", 7
-      d = mockfile 1, "x", 8
-      e = mockfile 1, "x", 7
-      
+      include Files
       [
-        [  0, a, a ],
-        [ -1, a, b ],
-        [  1, b, a ],
-        [ -1, a, c ],
-        [  1, c, a ],
-        [ -1, a, d ],
-        [  1, d, a ],
-        [  0, a, e ],
+        [  0, X17, X17 ],
+        [ -1, X17, X27 ],
+        [  1, X27, X17 ],
+        [ -1, X17, Y17 ],
+        [  1, Y17, X17 ],
+        [ -1, X17, X18 ],
+        [  1, X18, X17 ],
+        [  0, X17, X17.dup ],
       ]
     end
 

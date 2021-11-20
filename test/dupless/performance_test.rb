@@ -15,13 +15,13 @@ module Dupless
                       (fromsize .. tosize).each do |size|
                         (frombytes .. tobytes).each do |bytes|
                           (fromsum .. tosum).each do |checksum|
-                            a << mockfile(size, bytes, checksum)
+                            a << Files::mockfile(size, bytes, checksum)
                           end
                         end
                       end
                       
-                      a << mockfile(2, 'a', 7)
-                      a << mockfile(2, 'a', 7)
+                      a << Files::mockfile(2, 'a', 7)
+                      a << Files::mockfile(2, 'a', 7)
                     end
                   end
     end

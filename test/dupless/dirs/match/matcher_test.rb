@@ -5,17 +5,22 @@ require 'dupless/tc'
 module Dupless
   module Dirs
     class MatcherTest < Dupless::TestCase
+      # collision of Dupless::TestCase::Dirs and Dupless::Dirs
+      D = Dupless::TestCase::Dirs
+      F = Dupless::TestCase::Files
+      
       PARAMS = Hash.new.tap do |h|
         h[:identical] = Array.new.tap do |a|
-          a << [ Match::Identical.new(D1, D3, [[F1, F1], [F2, F2]]), D1, D3 ]
+          a << [ Match::Identical.new(D::X17_X27_1, D::X17_X27_2, [[F::X17, F::X17], [F::X27, F::X27]]), D::X17_X27_1, D::X17_X27_2 ]
         end
         h[:contains] = Array.new.tap do |a|
-          [ [ D5, D1 ], [ D1, D5 ] ].each do |xy|
-            a << [ Match::XContainsY.new(D5, D1, [F3], [[F1, F1], [F2, F2]]), *xy ]
+          dirs = [ D::X17_X27_1, D::X17_1 ]
+          [ dirs, dirs.reverse ].each do |xy|
+            a << [ Match::XContainsY.new(D::X17_X27_1, D::X17_1, [F::X27], [[F::X17, F::X17]]), *xy ]
           end
         end
         h[:mismatch] = Array.new.tap do |a|
-          a << [ Match::Mismatch.new(D1, D4, [F2], [[F1, F1]], [F3]), D1, D4 ]
+          a << [ Match::Mismatch.new(D::X17_X27_1, D::X17_Y17_1, [F::X27], [[F::X17, F::X17]], [F::Y17]), D::X17_X27_1, D::X17_Y17_1 ]
         end
       end
       

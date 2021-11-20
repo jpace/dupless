@@ -1,6 +1,6 @@
 require 'dupless/dirs/match/strategy'
 require 'dupless/dir/directory'
-require 'dupless/tc'
+require 'dupless/dirs/match/tc'
 
 module Dupless::Dirs::MatchStrategy
   class Test < Dupless::Match::TestCase
@@ -8,53 +8,20 @@ module Dupless::Dirs::MatchStrategy
       Dupless::Dirs::MatchFields.new common: common, x_only: x_only, y_only: y_only
     end
 
-    def self.directory name, *children
-      Directory.new name, children
-    end
-
-    module Files
-      def self.mockfile(*args)
-        Dupless::TestCase.mockfile *args
-      end
-      
-      A = mockfile 1, "x", 7
-      B = mockfile 2, "x", 7
-      C = mockfile 1, "y", 7
-      D = mockfile 1, "x", 8
-    end
-
-    module Dirs
-      def self.directory name, *children
-        Dupless::Directory.new name, children
-      end
-
-      AB1 = directory "a-b", Files::A, Files::B
-      AB2 = directory "a-b", Files::A, Files::B
-      BA = directory "b-a", Files::B, Files::A
-      AC = directory "a-c", Files::A, Files::C
-      ABC = directory "a-b-c", Files::A, Files::B, Files::C
-      EMPTY1 = directory "empty-1"
-      EMPTY2 = directory "empty-2"
-      D = directory "d", Files::D
-    end
-
     def self.build_params
       params = Array.new
 
       # identical
-      exp = match_fields common: [ [ Files::A, Files::A ], [ Files::B, Files::B ] ]
-      params << [ exp, exp, Dirs::AB1, Dirs::AB2 ]
-      params << [ exp, exp, Dirs::AB1, Dirs::BA ]
+      exp = match_fields common: [ [ Files::X17, Files::X17 ], [ Files::X27, Files::X27 ] ]
+      params << [ exp, exp, Dirs::X17_X27_1, Dirs::X17_X27_2 ]
+      params << [ exp, exp, Dirs::X17_X27_2, Dirs::X17_X27_1 ]
 
       # overlap/mismatch
-      exp = match_fields common: [ [ Files::A, Files::A ] ], x_only: [ Files::B ], y_only: [ Files::C ]
-      params << [ exp, nil, Dirs::AB1, Dirs::AC ]
+      exp = match_fields common: [ [ Files::X17, Files::X17 ] ], x_only: [ Files::X27 ], y_only: [ Files::Y17 ]
+      params << [ exp, nil, Dirs::X17_X27_1, Dirs::X17_Y17_1 ]
 
-      exp = match_fields common: [ [ Files::A, Files::A ], [ Files::B, Files::B ] ], x_only: [ Files::C ]
-      params << [ exp, nil, Dirs::ABC, Dirs::AB1 ]
-      
       # nothing common
-      params << [ nil, nil, Dirs::AB1, Dirs::D ]
+      params << [ nil, nil, Dirs::X17_1, Dirs::X27_1 ]
       
       # both empty
       params << [ nil, nil, Dirs::EMPTY1, Dirs::EMPTY2 ]

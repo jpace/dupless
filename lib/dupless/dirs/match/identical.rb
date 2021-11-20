@@ -20,10 +20,10 @@ module Dupless::Match
     
     def == other
       cmp = super
-      if cmp.nonzero?
+      if cmp == 0
         cmp = compare self, other, :common
       end
-      cmp
+      cmp == 0
     end
   end
 end

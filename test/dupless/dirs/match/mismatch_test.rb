@@ -3,50 +3,32 @@ require 'dupless/dirs/match/tc'
 
 module Dupless::Match
   class MismatchTest < TestCase
-    objects = [
-      # the x-only, etc., are not accurate to the definitions in tc.rb:
-      Mismatch.new(D1, D3, Array[F1], Array[F2], Array[F3]),
-      Mismatch.new(D2, D4, Array[F3], Array[F4], Array[F5]),
-    ]
+    def run_test index, field
+      args = [ Dirs::X17_X27_1, Dirs::X17_Y17_1, Array[Files::X27], [[Files::X17, Files::X17]], Array[Files::Y17] ]
+      match = Mismatch.new(*args)
+      expected = args[index]
+      result = match.send field
+      assert_equal expected, result
+    end
+
+    def test_x
+      run_test 0, :x
+    end
+
+    def test_y
+      run_test 1, :y
+    end
     
-    param_test [
-      [ D1, objects[0] ],
-      [ D2, objects[1] ]
-    ] do |exp, m|
-      result = m.x
-      assert_equal exp, result
+    def test_x_only
+      run_test 2, :x_only
     end
-
-    param_test [
-      [ D3, objects[0] ],
-      [ D4, objects[1] ]
-    ] do |exp, m|
-      result = m.y
-      assert_equal exp, result
+    
+    def test_common
+      run_test 3, :common
     end
-
-    param_test [
-      [ Array[F1], objects[0] ],
-      [ Array[F3], objects[1] ],
-    ] do |exp, m|
-      result = m.x_only
-      assert_equal exp, result
-    end
-
-    param_test [
-      [ Array[F2], objects[0] ],
-      [ Array[F4], objects[1] ],
-    ] do |exp, m|
-      result = m.common
-      assert_equal exp, result
-    end
-
-    param_test [
-      [ Array[F3], objects[0] ],
-      [ Array[F5], objects[1] ],
-    ] do |exp, m|
-      result = m.y_only
-      assert_equal exp, result
+    
+    def test_y_only
+      run_test 4, :y_only
     end
   end
 end

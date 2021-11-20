@@ -5,8 +5,8 @@ module Dupless
   class DirectoryTest < TestCase
     def self.build_params
       [
-        [ [ F1, F2 ], D1 ],
-        [ [ F1, F2, F3 ], D5 ],
+        [ [ Files::X17, Files::X27 ], Dirs::X17_X27_1 ],
+        [ [ Files::X17 ], Dirs::X17_1 ]
       ]
     end
 

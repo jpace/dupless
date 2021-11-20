@@ -3,6 +3,7 @@ require 'paramesan'
 require 'logue/log'
 require 'logue/loggable'
 require 'dupless/mockfiles'
+require 'dupless/dir/directory'
 
 Logue::Log::level = Logue::Level::DEBUG
 
@@ -12,27 +13,30 @@ module Dupless
     include Logue::Loggable
     extend Logue::Loggable
 
-    def self.mockfile size, bytes, checksum
-      MockFile.create size, bytes, checksum
-    end
+    module Files
+      def self.mockfile size, bytes, checksum
+        MockFile.create size, bytes, checksum
+      end
+      
+      X17 = mockfile 1, "x", 7
+      X27 = mockfile 2, "x", 7
+      Y17 = mockfile 1, "y", 7
+      X18 = mockfile 1, "x", 8
+      Z39 = mockfile 3, "z", 9
+    end      
 
-    def self.directory name, *children
-      Dupless::Directory.new name, children
-    end
-    
-    F1 = mockfile 1, "x", 7
-    F2 = mockfile 2, "x", 7
-    F3 = mockfile 1, "y", 7
-    F4 = mockfile 1, "x", 8
-    F5 = mockfile 3, "z", 9
+    module Dirs
+      def self.directory name, *children
+        Dupless::Directory.new name, children
+      end
 
-    D1 = directory "F1-F2",    F1, F2
-    D2 = directory "F1-F2",    F1, F2
-    D3 = directory "F2-F1",    F2, F1
-    D4 = directory "F1-F3",    F1, F3
-    D5 = directory "F1-F2-F3", F1, F2, F3
-    D6 = directory "empty-1"
-    D7 = directory "empty-2"  
-    D8 = directory "F2-F1",    F1, F5
+      X17_X27_1 = directory "X17_X27_1", Files::X17, Files::X27
+      X17_X27_2 = directory "X17_X27_2", Files::X17, Files::X27
+      X17_Y17_1 = directory "X17_Y17_1", Files::X17, Files::Y17
+      X17_1 = directory "X17_1", Files::X17
+      X27_1 = directory "X27_1", Files::X27
+      EMPTY1 = directory "empty-1"
+      EMPTY2 = directory "empty-2"  
+    end
   end
 end

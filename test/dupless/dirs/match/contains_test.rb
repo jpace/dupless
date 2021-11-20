@@ -1,11 +1,11 @@
-require 'dupless/dirs/match/identical'
+require 'dupless/dirs/match/contains'
 require 'dupless/dirs/match/tc'
 
 module Dupless::Match
-  class IdenticalTest < TestCase
+  class ContainsTest < TestCase
     def run_test index, field
-      args = [ Dirs::X17_X27_1, Dirs::X17_X27_1, Array[Files::X17, Files::X27] ]
-      match = Identical.new(*args)
+      args = [ Dirs::X17_X27_1, Dirs::X17_1, Array[Files::X27], [[Files::X17, Files::X17]] ]
+      match = XContainsY.new(*args)
       expected = args[index]
       result = match.send field
       assert_equal expected, result
@@ -19,8 +19,12 @@ module Dupless::Match
       run_test 1, :y
     end
     
+    def test_only
+      run_test 2, :only
+    end
+    
     def test_common
-      run_test 2, :common
+      run_test 3, :common
     end
   end
 end
