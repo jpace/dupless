@@ -12,61 +12,61 @@ module Dupless::Dirs::MatchStrategy
     def match x, y
       xkids = x.children
       ykids = y.children
-      match_elements xkids, ykids
-    end
-
-    def match_fields
-      Dupless::Dirs::MatchFields.new
+      if pre_filtered? xkids, ykids
+        nil
+      else
+        @others = ykids.dup
+        @fields = Dupless::Dirs::MatchFields.new
+        match_elements(xkids) ? @fields : nil
+      end
     end
 
     def to_s
       self.class.to_s
     end
 
-    def match_child others, child
-      others.each_with_index do |obj, idx|
+    def match_child child
+      @others.each_with_index do |obj, idx|
         next unless obj
         if child == obj
-          others[idx] = nil
-          return [ child, obj ]
+          @others[idx] = nil
+          @fields.common << [ child, obj ]
+          return true
         end
       end
-      nil
+      false
+    end
+
+    def pre_filtered? xkids, ykids
+      false
     end
   end
 
   class Complete < Base
-    def match_elements xkids, ykids
-      fields = match_fields
-      others = ykids.dup
+    def match_elements xkids
       xkids.each do |child|
-        if m = match_child(others, child)
-          fields.common << m
-        else
-          fields.x_only << child
+        unless m = match_child(child)
+          @fields.x_only << child
         end
       end
-      return nil unless fields.common.any?
-      fields.y_only = others.compact
-      fields
+      if @fields.common.any?
+        @fields.y_only = @others.compact
+      end
     end
   end
 
   class IdenticalOnly < Base
-    def match_elements xkids, ykids
-      return nil if xkids.size != ykids.size
-      fields = match_fields
-      others = ykids.dup
+    def pre_filtered? xkids, ykids
+      xkids.size != ykids.size
+    end
+    
+    def match_elements xkids
       xkids.each do |child|
-        if m = match_child(others, child)
-          fields.common << m
-        else
+        unless m = match_child(child)
           return nil
         end
       end
-      return nil unless fields.common.any?
-      return nil unless others.compact.empty?
-      fields
+      @fields.common.any? && @others.compact.empty?
     end
   end
 end

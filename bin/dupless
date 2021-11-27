@@ -62,9 +62,9 @@ ARGV.each_with_index do |arg, idx|
 end
 
 if output == :directories
-  cmp = Dupless::DirCompare.new(args, type: type, cachename: "/tmp/dupless.yaml")
+  cmp = Dupless::DirCompare.new(*args, type: type, cachename: "/tmp/dupless.yaml")
   cmp.show_duplicates filter: filter, formatter: matchformat
 else
-  cmp = Dupless::FileCompare.new(args, type: type, cachename: "/tmp/dupless.yaml")
+  cmp = Dupless::FileCompare.new(*args, type: type, cachename: "/tmp/dupless.yaml")
   cmp.show_duplicates filter: filter, formatter: fileformat
 end

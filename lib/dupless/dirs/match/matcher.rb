@@ -1,5 +1,5 @@
 require 'dupless/dirs/match/identical'
-require 'dupless/dirs/match/contains'
+require 'dupless/dirs/match/xcontainsy'
 require 'dupless/dirs/match/mismatch'
 require 'dupless/dirs/match/strategy'
 require 'dupless/util/obj'

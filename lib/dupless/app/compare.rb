@@ -11,6 +11,8 @@ module Dupless
     include Logue::Loggable
     
     def initialize(*args, type: :singlepass, cachename: nil, matcher: nil)
+      puts "args: #{args}"
+      puts "args.class: #{args.class}"
       cachename ||= "/tmp/dupless.yaml"
       cache = Cache.instance
       cache.set cachename
