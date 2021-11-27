@@ -15,21 +15,20 @@ module Dupless::Dirs::MatchStrategy
       if pre_filtered? xkids, ykids
         nil
       else
-        @others = ykids.dup
         @fields = Dupless::Dirs::MatchFields.new
-        match_elements(xkids) ? @fields : nil
+        @fields.y_only = ykids.dup
+        if match_elements(xkids) && @fields.common.any?
+          @fields.y_only.compact!
+          post_filtered? ? nil : @fields
+        end
       end
     end
 
-    def to_s
-      self.class.to_s
-    end
-
     def match_child child
-      @others.each_with_index do |obj, idx|
+      @fields.y_only.each_with_index do |obj, idx|
         next unless obj
         if child == obj
-          @others[idx] = nil
+          @fields.y_only[idx] = nil
           @fields.common << [ child, obj ]
           return true
         end
@@ -40,17 +39,18 @@ module Dupless::Dirs::MatchStrategy
     def pre_filtered? xkids, ykids
       false
     end
+
+    def post_filtered?
+      false
+    end
   end
 
   class Complete < Base
     def match_elements xkids
       xkids.each do |child|
-        unless m = match_child(child)
+        unless match_child child
           @fields.x_only << child
         end
-      end
-      if @fields.common.any?
-        @fields.y_only = @others.compact
       end
     end
   end
@@ -62,11 +62,14 @@ module Dupless::Dirs::MatchStrategy
     
     def match_elements xkids
       xkids.each do |child|
-        unless m = match_child(child)
+        unless match_child child
           return nil
         end
       end
-      @fields.common.any? && @others.compact.empty?
+    end
+
+    def post_filtered?
+      @fields.y_only.any?
     end
   end
 end
