@@ -1,23 +1,21 @@
 require 'dupless/set/base'
+require 'dupless/util/timer'
 
 module Dupless::Set
   class SinglePass < Base
     def initialize files: Array.new, matcher: nil
       super matcher: matcher
-      info { "init: #{Time.now}" }
-      @size_to_files = Hash.new { |h, k| h[k] = Array.new }
-      files.each do |f|
-        @size_to_files[f.size] << f
+      # can do group_by or Hash(Array default), but not both:
+      Dupless::Timer.new.debug do
+        @size_to_files = files.group_by(&:size)
       end
-      info { "added: #{Time.now}" }
     end
 
-    def << obj
-      @size_to_files[obj.size] << obj
+    def << file
+      (@size_to_files[file.size] ||= Array.new) << file
     end
     
     def execute
-      info { "@size_to_files.keys.size: #{@size_to_files.keys.size}" }
       @size_to_files.each do |size, files|
         nfiles = files.size
         next if nfiles < 2
@@ -38,7 +36,7 @@ module Dupless::Set
     end
 
     def to_s
-      "#keys: #{@size_to_files.keys.size}"
+      @size_to_files.to_s
     end
   end
 end

@@ -1,5 +1,3 @@
-require 'dupless/file/dupfiles'
-
 module Dupless
   class FileMatcher
     include Logue::Loggable
@@ -12,7 +10,7 @@ module Dupless
 
     def add_duplicate dup, x, y
       unless dup
-        dup = Dupless::DuplicateFiles.new([x])
+        dup = Array[x]
         @duplicates << dup
       end
       dup << y

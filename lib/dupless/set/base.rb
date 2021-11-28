@@ -13,7 +13,7 @@ module Dupless::Set
     end
 
     def run
-      Dupless::Timer.new.run { execute }
+      Dupless::Timer.new.info { execute }
     end
 
     def execute
@@ -37,12 +37,12 @@ module Dupless::Set
       @files = files || Array.new
     end
 
-    def << obj
-      @files << obj
+    def << file
+      @files << file
     end
 
     def to_s
-      "files.size: #{@files.size}"
+      @files.to_s
     end
   end  
 end

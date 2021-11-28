@@ -1,6 +1,8 @@
 require 'dupless/set/sorted_by_size'
 require 'dupless/set/tc'
 
+Logue::Log::level = Logue::Level::INFO
+
 module Dupless::Set
   class SortedBySizeTest < TestCase
     def self.set_class

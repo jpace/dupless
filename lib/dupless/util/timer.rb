@@ -4,17 +4,27 @@ module Dupless
   class Timer
     include Logue::Loggable
 
-    def run &blk
+    def debug &blk
+      run :debug, &blk
+    end
+
+    def info &blk
+      run :info, &blk
+    end
+
+    def run level = :info, &blk
+      meth = method(level).super_method
+      
       start = Time.now
-      info "start: #{start}"
+      meth.call "start: #{start}"
       
       ret = blk.call
 
       done = Time.now
-      info "done: #{done}"
+      meth.call "done: #{done}"
 
       diff = done - start
-      info "diff: #{diff}"
+      meth.call "diff: #{diff}"
 
       ret
     end

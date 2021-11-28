@@ -11,7 +11,7 @@ module Dupless
       dups = @set.matcher.duplicates
       info "#dups: #{dups.size}"
       dups.each_with_index do |dup, idx|
-        dup.write formatter: formatter
+        formatter.write_files files: dup
       end
       puts
     end

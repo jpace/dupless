@@ -1,5 +1,3 @@
-require 'dupless/dirs/match/identical'
-
 module Dupless::Match
   class Formatter
     def write_common match: nil

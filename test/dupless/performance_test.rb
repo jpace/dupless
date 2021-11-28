@@ -1,5 +1,4 @@
 require 'dupless/set/factory'
-require 'dupless/file/dupfiles'
 require 'dupless/file/filematcher'
 require 'dupless/tc'
 
@@ -27,7 +26,7 @@ module Dupless
     end
 
     def self.dupfiles(*indices)
-      DuplicateFiles.new(indices.collect { |idx| files[idx] })
+      indices.collect { |idx| files[idx] }
     end
 
     def self.performance_build_params
@@ -37,7 +36,7 @@ module Dupless
           info "val: #{val}"
         end
       end
-      info "files.size: #{files.size}"
+      debug "files.size: #{files.size}"
       sf = Set::Factory.new
       set = sf.set files: files, type: :sorted_by_size, matcher: Dupless::FileMatcher.new
       set.run

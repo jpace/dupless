@@ -1,28 +1,21 @@
-require 'dupless/file/dupfiles'
 require 'dupless/tc'
-require 'dupless/mockfiles'
 require 'dupless/file/filematcher'
 
 module Dupless::Set
   class TestCase < Dupless::TestCase
-    def self.set range
-      set_class.new files: files[range], matcher: Dupless::FileMatcher.new
+    def self.set files
+      set_class.new files: files, matcher: Dupless::FileMatcher.new
     end
     
-    def self.files
-      Dupless::MockFiles.files
-    end
-
-    def self.dupfiles(*indices)
-      Dupless::DuplicateFiles.new(indices.collect { |idx| files[idx] })
-    end
+    include Files
+    include Dirs
 
     def self.dups_build_params
       Array.new.tap do |ary|
-        ary << [ Array.new, set(0 .. 3) ]
-        ary << [ [ dupfiles(0, 4) ], set(0 .. 4) ]
-        ary << [ [ dupfiles(0, 4), dupfiles(1, 5) ], set(0 .. 5) ]
-        ary << [ [ dupfiles(0, 4, 6), dupfiles(1, 5) ], set(0 .. 6) ]
+        ary << [ [],                                           set([X17, X27, Y17, X18]) ]
+        ary << [ [ [ X17, X17 ] ],                             set([X17, X27, Y17, X18, X17]) ]
+        ary << [ [ [ X17, X17 ], [ X27, X27 ] ],               set([X17, X27, Y17, X18, X17, X27]) ]
+        ary << [ [ [ X17, X17 ], [ Y17, Y17 ], [ X27, X27 ] ], set([X17, X27, Y17, X18, X17, X27, Y17]) ]
       end
     end
   end
