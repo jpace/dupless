@@ -44,7 +44,7 @@ module Dupless
         ary << [ [ dupfiles(18, -2, -1) ], set ]
       end
     end
-
+    
     param_test performance_build_params.each do |expected, set|
       result = set.matcher.duplicates
       assert_equal expected, result

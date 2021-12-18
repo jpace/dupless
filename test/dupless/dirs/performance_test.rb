@@ -44,7 +44,6 @@ module Dupless
           end
         end
 
-        size = 10
         dirs = Array.new.tap do |a|
           [ 10, 25, 50, 100 ].each do |size|
             offset_size.each do |offpct, lenpct|
@@ -59,7 +58,6 @@ module Dupless
       end
 
       def run_test params, matcher, ntimes, x, y
-        strcls = matcher.strategy.class.to_s.sub(%r{.*::(\w+?)[A-Z].*}) { $1 }
         printf "%8d | ", x.children.size
         printf "%8d | ", y.children.size
         
@@ -79,12 +77,6 @@ module Dupless
 
       def xtest_all
         params = self.class.build_match_identical_params
-
-        strategy = if false
-                     
-                   else
-                     MatchStrategy.new
-                   end
 
         # searching for only identical
         args = { identical: true, contains: false, mismatch: false }

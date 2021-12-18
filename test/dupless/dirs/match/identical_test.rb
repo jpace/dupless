@@ -3,24 +3,30 @@ require 'dupless/dirs/match/tc'
 
 module Dupless::Match
   class IdenticalTest < TestCase
-    def run_test index, field
-      args = [ Dirs::X17_X27_1, Dirs::X17_X27_1, Array[Files::X17, Files::X27] ]
+    def self.build_params
+      include Dirs
+      include Files
+      Array.new.tap do |a|
+        a << [ X17_X27_1, X17_X27_1, [ X17, X27 ], [ X17_X27_1, X17_X27_1, [ X17, X27 ] ] ]
+      end
+    end
+
+    param_test build_params.each do |expx, expy, expcommon, args|
       match = Identical.new(*args)
-      expected = args[index]
-      result = match.send field
-      assert_equal expected, result
+      result = match.x
+      assert_equal expx, result
     end
 
-    def test_x
-      run_test 0, :x
+    param_test build_params.each do |expx, expy, expcommon, args|
+      match = Identical.new(*args)
+      result = match.y
+      assert_equal expy, result
     end
 
-    def test_y
-      run_test 1, :y
-    end
-    
-    def test_common
-      run_test 2, :common
+    param_test build_params.each do |expx, expy, expcommon, args|
+      match = Identical.new(*args)
+      result = match.common
+      assert_equal expcommon, result
     end
   end
 end
