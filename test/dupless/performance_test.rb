@@ -4,6 +4,10 @@ require 'dupless/tc'
 
 module Dupless
   class PerformanceTest < TestCase
+    def self.mockfile size, bytes, checksum
+      MockFile.new size, bytes, checksum
+    end
+    
     def self.files
       fromsize, tosize = 0, 5
       frombytes, tobytes = 'a', 'c'
@@ -14,19 +18,15 @@ module Dupless
                       (fromsize .. tosize).each do |size|
                         (frombytes .. tobytes).each do |bytes|
                           (fromsum .. tosum).each do |checksum|
-                            a << Files::mockfile(size, bytes, checksum)
+                            a << mockfile(size, bytes, checksum)
                           end
                         end
                       end
                       
-                      a << Files::mockfile(2, 'a', 7)
-                      a << Files::mockfile(2, 'a', 7)
+                      a << mockfile(2, 'a', 7)
+                      a << mockfile(2, 'a', 7)
                     end
                   end
-    end
-
-    def self.dupfiles(*indices)
-      indices.collect { |idx| files[idx] }
     end
 
     def self.performance_build_params
@@ -40,8 +40,11 @@ module Dupless
       sf = Set::Factory.new
       set = sf.set files: files, type: :sorted_by_size, matcher: Dupless::FileMatcher.new
       set.run
+
+      exp1 = [ files[-2], files[-1], mockfile(2, 'a', 7) ]
+      
       Array.new.tap do |ary|
-        ary << [ [ dupfiles(18, -2, -1) ], set ]
+        ary << [ [ exp1 ], set ]
       end
     end
     
