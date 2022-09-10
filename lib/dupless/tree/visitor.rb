@@ -1,7 +1,12 @@
-require 'pathname'
+require 'dupless/tree/nodes'
 
 module Dupless
-  class FileDirProcessor
+  module TreeNodes
+  end
+end
+
+module Dupless::TreeNodes
+  class Visitor
     # sort: process children in a directory in sorted order;
     #       adds about 15% to processing time.
     def initialize(*args, sort: false, verbose: false)
@@ -12,26 +17,17 @@ module Dupless
                      Proc.new { |dir| dir.children }
                    end
       args.each do |arg|
-        pn = arg.kind_of?(Pathname) ? arg : Pathname.new(arg)
-        process pn
+        process arg
       end
     end
 
-    def process pn
-      if pn.directory?
-        process_directory pn
-      elsif pn.file?
-        process_file pn
-      elsif pn.symlink?
-        printmsg { "skipping symlink: #{pn}" }
-      elsif pn.pipe?
-        printmsg { "skipping pipe: #{pn}" }
-      elsif pn.socket?
-        printmsg { "skipping socket: #{pn}" }
-      elsif pn.exist?
-        printmsg { "unknown type: #{pn}" }
+    def process what
+      if what.directory?
+        process_directory what
+      elsif what.file?
+        process_file what
       else
-        printmsg { "skipping non-existing element: #{pn}" }
+        printmsg { "skipping unhandled element: #{what}" }
       end
     end
 

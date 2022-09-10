@@ -12,12 +12,23 @@ module Dupless::Dirs::MatchStrategy
       params = Array.new
 
       # identical
-      exp = match_fields common: [ [ Files::X17, Files::X17 ], [ Files::X27, Files::X27 ] ]
+      exp = match_fields common: [
+                           [ Files::X17, Files::X17 ],
+                           [ Files::X27, Files::X27 ]
+                         ]
       params << [ exp, exp, Dirs::X17_X27_1, Dirs::X17_X27_2 ]
       params << [ exp, exp, Dirs::X17_X27_2, Dirs::X17_X27_1 ]
 
       # overlap/mismatch
-      exp = match_fields common: [ [ Files::X17, Files::X17 ] ], x_only: [ Files::X27 ], y_only: [ Files::Y17 ]
+      exp = match_fields common: [
+                           [ Files::X17, Files::X17 ]
+                         ],
+                         x_only: [
+                           Files::X27
+                         ],
+                         y_only: [
+                           Files::Y17
+                         ]
       params << [ exp, nil, Dirs::X17_X27_1, Dirs::X17_Y17_1 ]
 
       # nothing common

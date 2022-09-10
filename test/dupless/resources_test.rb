@@ -6,8 +6,8 @@ module Dupless
     param_test [
       [ [ "1", 6 ], "1" ],
       [ [ "X17-Y17", 2 ], "1", "X17-Y17" ],
-      [ "1-x-7", "1", "X17-Y17", "1-x-7" ],
-      [ "1-y-7", "1", "X17-Y17", "1-y-7" ],
+      [ "x-1-7", "1", "X17-Y17", "x-1-7" ],
+      [ "y-1-7", "1", "X17-Y17", "y-1-7" ],
     ] do |exp, *args|
       obj = Object.new
       obj.extend Resources

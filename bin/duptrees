@@ -1,0 +1,137 @@
+#!/usr/bin/env ruby
+
+dir = File.dirname(File.dirname(File.expand_path(__FILE__)))
+libpath = dir + "/lib"
+$:.unshift libpath
+
+require 'dupless/tree/nodes'
+require 'dupless/tree/visitor'
+require 'dupless/tree/tree'
+require 'dupless/io/fdprocessor'
+require 'dupless/tree/nodes'
+require 'dupless/io/println'
+require 'dupless/util/ticker'
+require 'logue'
+
+Logue::Log::level = Logue::Level::INFO
+
+class DuptreesApp < Dupless::TreeNodes::Visitor
+  include Println
+  
+  def initialize args
+    @dirs = Array.new
+    println "args", args
+    @min_height = 3
+    @max_matches = nil
+    idx = 0
+    while idx + 1 < args.size
+      if args[idx] == "--height"
+        args.delete_at idx
+        @min_height = args[idx].to_i
+        args.delete_at idx
+      elsif args[idx] == "--matches"
+        args.delete_at idx
+        @max_matches = args[idx].to_i
+        args.delete_at idx
+      else
+        break
+      end
+    end
+
+    println "@max_matches", @max_matches
+    println "@min_height", @min_height
+    
+    @ticker = Ticker.new 10_000
+    nodes = args.collect do |arg|
+      pn = Pathname.new arg
+      if pn.file?
+        Dupless::TreeNodes::FileNode.new pn
+      elsif Dir.empty? arg
+        Dupless::TreeNodes::EmptyDir.new pn
+      else
+        Dupless::TreeNodes::ParentDir.new pn
+      end
+    end
+    println "# nodes", nodes.size
+    super(*nodes)
+    @ticker.write_elapsed
+    puts
+  end
+
+  def process_directory dir
+    @ticker.tick
+    if dir.height > @min_height
+      @dirs << dir
+      super
+    end
+  end
+
+  def filter_dirs
+    puts "filter dirs"
+    println "# dirs", @dirs.size
+    t = Ticker.new 10_000
+    @filtered = Hash.new { |h, k| h[k] = Array.new }.tap do |h|
+      @dirs.each do |dir|
+        t.tick
+        ht = dir.height
+        if ht >= @min_height
+          count = dir.count
+          key = [ ht, count ]
+          h[ht] << dir
+        end
+      end
+      t.write_elapsed
+    end
+  end
+
+  def write_match x, y, match
+    println "x", x
+    println "y", y
+    println "height", x.height
+  end
+
+  def process_dups
+    puts "process dups"
+    println "# filtered", @filtered.size
+    t = Ticker.new 500
+    obj = Dupless::TreeNodes::Matcher.new
+    matches = 0
+    @filtered.sort.reverse.each do |key, dirs|
+      (0 ... dirs.size).each do |i|
+        t.tick
+        x = dirs[i]
+        printed = false        
+        (i + 1 ... dirs.size).each do |j|
+          # sdt.tick
+          y = dirs[j]
+          result = obj.match x, y
+          if result
+            unless printed
+              println "x", x
+              println "height", x.height
+              printed = true
+            end
+            println "y", y
+            matches += 1
+            if @max_matches && matches >= @max_matches
+              t.write_elapsed
+              return
+            end
+          end
+        end
+        if printed
+          puts
+        end
+      end
+    end
+    t.write_elapsed
+  end
+
+  def write
+  end
+end
+
+obj = DuptreesApp.new ARGV
+obj.filter_dirs
+obj.process_dups
+obj.write

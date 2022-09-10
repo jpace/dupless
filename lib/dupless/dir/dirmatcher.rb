@@ -22,6 +22,12 @@ module Dupless
       xd = x.pathname.parent
       yd = y.pathname.parent
 
+      # info "x: #{x}"
+      # info "y: #{y}"
+      
+      # info "xd: #{xd}"
+      # info "yd: #{yd}"
+
       @dir_to_files[xd] << x
       @dir_to_files[yd] << y
 

@@ -14,7 +14,7 @@ module Dupless
       @bytes = Hash.new
       @checksum = nil
     end
-
+    
     def size
       @size ||= @pathname.size
     end
@@ -29,6 +29,14 @@ module Dupless
 
     def digest
       Digest::MD5.hexdigest @pathname.read
+    end
+
+    def basename
+      @pathname.basename
+    end
+
+    def height
+      0
     end
 
     def <=> other

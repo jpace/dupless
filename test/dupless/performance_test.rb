@@ -18,13 +18,13 @@ module Dupless
                       (fromsize .. tosize).each do |size|
                         (frombytes .. tobytes).each do |bytes|
                           (fromsum .. tosum).each do |checksum|
-                            a << mockfile(size, bytes, checksum)
+                            a << mockfile(bytes, size, checksum)
                           end
                         end
                       end
                       
-                      a << mockfile(2, 'a', 7)
-                      a << mockfile(2, 'a', 7)
+                      a << mockfile('a', 2, 7)
+                      a << mockfile('a', 2, 7)
                     end
                   end
     end
@@ -41,7 +41,7 @@ module Dupless
       set = sf.set files: files, type: :sorted_by_size, matcher: Dupless::FileMatcher.new
       set.run
 
-      exp1 = [ files[-2], files[-1], mockfile(2, 'a', 7) ]
+      exp1 = [ files[-2], files[-1], mockfile('a', 2, 7) ]
       
       Array.new.tap do |ary|
         ary << [ [ exp1 ], set ]

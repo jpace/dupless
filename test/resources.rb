@@ -5,8 +5,8 @@ Logue::Log::level = Logue::Level::DEBUG
 
 module Dupless
   module Resources
-    def self.file size, bytes, checksum
-      MockFile.new size, bytes, checksum
+    def self.file bytes, size, checksum
+      MockFile.new bytes, size, checksum
     end
       
     def self.dir name, *children
@@ -55,7 +55,28 @@ module Dupless
             ]
           }
         ]
-      }
+      },
+      { "3" => [
+          { "X17-X27" => [
+              "x.1.7",
+              "x.2.7",
+            ]
+          }
+        ]
+      },
+      { "4" => [
+          "x.1.7",
+          "x.2.7",
+        ]
+      },
+      { "5" => [
+          "1-x-7",
+        ]
+      },
+      { "6" => [
+          { "x.1.7" => Array.new },
+        ]
+      }        
     ]
 
     def self.build_record record
@@ -69,8 +90,8 @@ module Dupless
       else
         value = record
         values =  value.split "."
-        size, bytes, checksum = values[1], values[0], values[2]
-        file size, bytes, checksum
+        bytes, size, checksum = values[0], values[1], values[2]
+        file bytes, size, checksum
       end
     end
 

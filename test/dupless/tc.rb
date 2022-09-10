@@ -17,12 +17,12 @@ module Dupless
     module Files
       extend Resources
       
-      X17 = find_by_path "1", "X17", "1-x-7"
-      X27 = find_by_path "1", "X27", "2-x-7"
-      Y17 = find_by_path "1", "X17-Y17", "1-y-7"
-      X18 = find_by_path "1", "X18", "1-x-8"
-      Z39 = find_by_path "1", "Z39", "3-z-9"
-    end      
+      X17 = find_by_path "1", "X17", "x-1-7"
+      X27 = find_by_path "1", "X27", "x-2-7"
+      Y17 = find_by_path "1", "X17-Y17", "y-1-7"
+      X18 = find_by_path "1", "X18", "x-1-8"
+      Z39 = find_by_path "1", "Z39", "z-3-9"
+    end
 
     module Dirs
       extend Resources
