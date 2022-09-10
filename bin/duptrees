@@ -37,20 +37,12 @@ class DuptreesApp < Dupless::TreeNodes::Visitor
         break
       end
     end
-
     println "@max_matches", @max_matches
     println "@min_height", @min_height
-    
+    factory = Dupless::TreeNodes::NodeFactory.new
     @ticker = Ticker.new 10_000
     nodes = args.collect do |arg|
-      pn = Pathname.new arg
-      if pn.file?
-        Dupless::TreeNodes::FileNode.new pn
-      elsif Dir.empty? arg
-        Dupless::TreeNodes::EmptyDir.new pn
-      else
-        Dupless::TreeNodes::ParentDir.new pn
-      end
+      factory.create arg
     end
     println "# nodes", nodes.size
     super(*nodes)

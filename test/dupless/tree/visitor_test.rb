@@ -100,7 +100,7 @@ module Dupless::TreeNodes
   class DirChildrenEmpty < FDTest
     def process_directory dir
       tick
-      Dupless::Directory.new dir
+      ddir = ParentDir.new dir
       unless ddir.children.empty?
         super
       end
@@ -111,7 +111,7 @@ module Dupless::TreeNodes
   class DirectoryEmpty < FDTest
     def process_directory dir
       tick
-      ddir = Dupless::Directory.new dir
+      ddir = ParentDir.new dir
       unless ddir.empty?
         super
       end
@@ -144,9 +144,9 @@ module Dupless::TreeNodes
     def process_directory dir
       tick
       if Dir.empty? dir
-        Dupless::EmptyDirectory.new dir
+        EmptyDir.new dir
       else
-        Dupless::ParentDirectory.new dir
+        ParentDir.new dir
         super
       end
     end
@@ -162,9 +162,9 @@ module Dupless::TreeNodes
     def process_directory dir
       tick
       if Dir.empty? dir
-        Dupless::EmptyDirectory.new dir
+        EmptyDir.new dir
       else
-        pn = Dupless::ParentDirectory.new dir
+        pn = ParentDir.new dir
         @dirs << pn
         super
       end
@@ -185,9 +185,9 @@ module Dupless::TreeNodes
     def process_directory dir
       tick
       if Dir.empty? dir
-        Dupless::EmptyDirectory.new dir
+        EmptyDir.new dir
       else
-        pn = Dupless::ParentDirectory.new dir
+        pn = ParentDir.new dir
         @dirs << pn
         super
       end
@@ -211,9 +211,9 @@ module Dupless::TreeNodes
     def process_directory dir
       tick
       if Dir.empty? dir
-        Dupless::EmptyDirectory.new dir
+        EmptyDir.new dir
       else
-        pn = Dupless::ParentDirectory.new dir
+        pn = ParentDir.new dir
         @dirs << pn
         super
       end
