@@ -1,8 +1,6 @@
 # Dupless
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dupless`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Find duplicated and overlapping directories, files, and trees in a file system.
 
 ## Installation
 
@@ -22,7 +20,39 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Two applications exist, with different implementations.
+
+### dupless
+
+This finds duplicated files and directories that at least partially match the files in another
+directory.
+
+File comparison is based on content of the file, not file names, thus like `diff`.
+
+This uses caching to avoid repeated reading of files.
+
+When a pair (or more) of files match from two directories, then the directories are compared, and
+may be one of these types:
+
+ * Identical: each file in both directories has a match in the other directory.
+ 
+ * Contains: each file in one directory has a file in another directory, i.e., the first
+ directory is a superset of the second.
+ 
+ * Mismatch: two directories have files in common, i.e., an intersection of at least one
+ element.
+ 
+### duptree
+
+This find duplicated hierarchies of files and directories, based on name only (not on
+file content, in contrast to `dupless`).
+
+Two directories are equal (identical) if all directories and files within each directory
+has a match in the second one.
+
+This does not use caching.
+
+Supersets ("contains") and intersections ("mismatches") are not calculated.
 
 ## Development
 
@@ -32,7 +62,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/jpace/dupless.
+Bug reports and pull requests are somewhat welcome on GitHub at https://github.com/jpace/dupless.
 
 ## License
 

@@ -15,30 +15,94 @@ require 'logue'
 
 Logue::Log::level = Logue::Level::INFO
 
+# about to write Ragol again ...
+class DuptreeOptions
+  attr_reader :min_height
+  attr_reader :max_matches
+  
+  def initialize args
+    @args = args
+    @min_height = 3
+    @max_matches = nil
+  end
+
+  def consume_option_int idx
+    @args.delete_at idx
+    @args[idx].to_i.tap do |value|
+      @args.delete_at idx
+    end
+  end
+  
+  def process
+    idx = 0
+    while idx + 1 < @args.size
+      if @args[idx] == "--height"
+        @min_height = consume_option_int idx
+      elsif @args[idx] == "--matches"
+        @max_matches = consume_option_int idx
+      else
+        break
+      end
+    end
+  end
+end
+
+class DuptreeWriter
+  include Println
+  
+  def initialize 
+    @x = nil
+  end
+
+  def write x, y
+    if @x.nil?
+      println "x", x
+      println "height", x.height
+      @x = x
+    end
+    println "y", y
+  end
+
+  def close
+    if @x
+      puts
+    end
+  end
+end
+
+class DuptreeQuoteWriter
+  include Println
+  
+  def initialize 
+    @x = nil
+  end
+
+  def write x, y
+    if @x.nil?
+      println "height", x.height
+      puts "\"#{x}\""
+      @x = x
+    end
+    puts "\"#{y}\""
+  end
+
+  def close
+    if @x
+      puts
+    end
+  end
+end
+
 class DuptreesApp < Dupless::TreeNodes::Visitor
   include Println
   
   def initialize args
     @dirs = Array.new
     println "args", args
-    @min_height = 3
-    @max_matches = nil
-    idx = 0
-    while idx + 1 < args.size
-      if args[idx] == "--height"
-        args.delete_at idx
-        @min_height = args[idx].to_i
-        args.delete_at idx
-      elsif args[idx] == "--matches"
-        args.delete_at idx
-        @max_matches = args[idx].to_i
-        args.delete_at idx
-      else
-        break
-      end
-    end
-    println "@max_matches", @max_matches
-    println "@min_height", @min_height
+    @options = DuptreeOptions.new args
+    @options.process
+    println "max_matches", @options.max_matches
+    println "min_height", @options.min_height
     factory = Dupless::TreeNodes::NodeFactory.new
     @ticker = Ticker.new 10_000
     nodes = args.collect do |arg|
@@ -52,7 +116,7 @@ class DuptreesApp < Dupless::TreeNodes::Visitor
 
   def process_directory dir
     @ticker.tick
-    if dir.height > @min_height
+    if dir.height > @options.min_height
       @dirs << dir
       super
     end
@@ -66,20 +130,11 @@ class DuptreesApp < Dupless::TreeNodes::Visitor
       @dirs.each do |dir|
         t.tick
         ht = dir.height
-        if ht >= @min_height
-          count = dir.count
-          key = [ ht, count ]
-          h[ht] << dir
-        end
+        count = dir.count
+        h[ht] << dir
       end
       t.write_elapsed
     end
-  end
-
-  def write_match x, y, match
-    println "x", x
-    println "y", y
-    println "height", x.height
   end
 
   def process_dups
@@ -92,28 +147,20 @@ class DuptreesApp < Dupless::TreeNodes::Visitor
       (0 ... dirs.size).each do |i|
         t.tick
         x = dirs[i]
-        printed = false        
+        writer = DuptreeQuoteWriter.new
         (i + 1 ... dirs.size).each do |j|
           # sdt.tick
           y = dirs[j]
-          result = obj.match x, y
-          if result
-            unless printed
-              println "x", x
-              println "height", x.height
-              printed = true
-            end
-            println "y", y
+          if obj.match x, y
+            writer.write x, y
             matches += 1
-            if @max_matches && matches >= @max_matches
+            if @options.max_matches && matches >= @options.max_matches
               t.write_elapsed
               return
             end
           end
         end
-        if printed
-          puts
-        end
+        writer.close
       end
     end
     t.write_elapsed

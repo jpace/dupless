@@ -287,64 +287,6 @@ module Dupless::TreeNodes
     end
   end
   
-  class DuptreesApp < Dupless::FileDirProcessor
-    def initialize args
-      @dirs = Array.new
-      @index = 0
-      @min_height = 10
-      super(*args)
-    end
-
-    def process_directory dir
-      if @index % 50000 == 0
-        puts "procdir: index: #{@index}"
-      end
-      @index += 1
-      
-      ddir = Dupless::Directory.new(dir)
-      if ddir.children.size > 0
-        @dirs << ddir
-        super
-      end
-    end
-
-    def process_duplicates
-      puts "processing; dirs.size: #{@dirs.size}"
-      index = 0
-      filtered = @dirs.select do |x|
-        if index % 500 == 0
-          puts "procdup: index: #{index}"
-        end
-        index += 1
-        x.height >= @min_height
-      end
-      puts "processing; filtered.size: #{filtered.size}"
-      (0 ... filtered.size - 1).each do |xi|
-        x = filtered[xi]
-        (xi + 1 ... filtered.size).each do |yi|
-          y = filtered[yi]
-          if x.count == y.count
-            obj = Dupless::Tree::Matcher.new
-            result = obj.match x, y
-            if result
-              println "x", x
-              println "y", y
-              println "x.height", x.height
-              println "result", result
-            end
-          end          
-        end
-      end
-    end
-
-    def write
-    end
-    
-    def println msg, obj
-      printf "%-20.20s: %s\n", msg, obj
-    end
-  end
-  
   class VisitorTest < Dupless::TestCase
     include Println
     
